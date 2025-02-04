@@ -8,19 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		EFD72AD62D51994D00BF0B44 /* StudyTimerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AD52D51994D00BF0B44 /* StudyTimerApp.swift */; };
-		EFD72AD82D51994D00BF0B44 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AD72D51994D00BF0B44 /* ContentView.swift */; };
+		EFD72AD82D51994D00BF0B44 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AD72D51994D00BF0B44 /* BaseView.swift */; };
 		EFD72ADA2D51994D00BF0B44 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AD92D51994D00BF0B44 /* Item.swift */; };
 		EFD72ADC2D51994E00BF0B44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFD72ADB2D51994E00BF0B44 /* Assets.xcassets */; };
 		EFD72ADF2D51994E00BF0B44 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFD72ADE2D51994E00BF0B44 /* Preview Assets.xcassets */; };
+		EFD72AE62D51A1E500BF0B44 /* ColorUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AE52D51A1E500BF0B44 /* ColorUtil.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EFD72AD22D51994D00BF0B44 /* StudyTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudyTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFD72AD52D51994D00BF0B44 /* StudyTimerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyTimerApp.swift; sourceTree = "<group>"; };
-		EFD72AD72D51994D00BF0B44 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EFD72AD72D51994D00BF0B44 /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		EFD72AD92D51994D00BF0B44 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		EFD72ADB2D51994E00BF0B44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EFD72ADE2D51994E00BF0B44 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		EFD72AE52D51A1E500BF0B44 /* ColorUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorUtil.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,11 +55,13 @@
 		EFD72AD42D51994D00BF0B44 /* StudyTimer */ = {
 			isa = PBXGroup;
 			children = (
+				EFD72AE92D51B1A600BF0B44 /* Models */,
 				EFD72AD52D51994D00BF0B44 /* StudyTimerApp.swift */,
-				EFD72AD72D51994D00BF0B44 /* ContentView.swift */,
+				EFD72AE72D51B06900BF0B44 /* Views */,
 				EFD72AD92D51994D00BF0B44 /* Item.swift */,
 				EFD72ADB2D51994E00BF0B44 /* Assets.xcassets */,
 				EFD72ADD2D51994E00BF0B44 /* Preview Content */,
+				EFD72AE82D51B10F00BF0B44 /* Utilities */,
 			);
 			path = StudyTimer;
 			sourceTree = "<group>";
@@ -68,6 +72,29 @@
 				EFD72ADE2D51994E00BF0B44 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		EFD72AE72D51B06900BF0B44 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				EFD72AD72D51994D00BF0B44 /* BaseView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		EFD72AE82D51B10F00BF0B44 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				EFD72AE52D51A1E500BF0B44 /* ColorUtil.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		EFD72AE92D51B1A600BF0B44 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,7 +167,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EFD72AD82D51994D00BF0B44 /* ContentView.swift in Sources */,
+				EFD72AE62D51A1E500BF0B44 /* ColorUtil.swift in Sources */,
+				EFD72AD82D51994D00BF0B44 /* BaseView.swift in Sources */,
 				EFD72ADA2D51994D00BF0B44 /* Item.swift in Sources */,
 				EFD72AD62D51994D00BF0B44 /* StudyTimerApp.swift in Sources */,
 			);
