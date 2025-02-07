@@ -11,6 +11,12 @@ import SwiftData
 var screenSize:CGSize = UIScreen.main.bounds.size
 
 struct BaseView: View {
+    
+    @StateObject private var timerVM = TimerModel()
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var startText: String = "Start"
+    
+    
     var body: some View {
         
         VStack { //Screen
@@ -111,15 +117,37 @@ struct BaseView: View {
          
                 HStack { //Clock Section
                     
-                }.frame(width: screenSize.width - 110, height: 110, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    .background(Color.blue)
-                    .padding(5) //Clock Section
+                 
+                    VStack {
+                        
+                        Text("\(timerVM.time)")
+                            .font(.system(size: 60, weight: .medium, design: .rounded))
+                            .alert("Timer Done!", isPresented: $timerVM.showingAlert) {
+                                //Code for Finished timer
+                            }
+                            .padding()
+                            .cornerRadius(20)
+                            .frame(width: screenSize.width - 190, height: 90)
+                            .foregroundColor(.white)
+                           
+                        
+                        
+                    }.onReceive(timer) { _ in
+                        timerVM.updateCountdown()
+                        
+                    }
+                    
+                }.frame(width: screenSize.width - 80, height: 110, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    .padding(5)
+                    //Clock Section
                 
                 
                 VStack {  //Start Button
                     
-                    Button("START") {
+                    Button("\(startText)") {
                         
+                        timerVM.start(minutes: timerVM.minutes)
+                        startText = "Pause"
                         
                     }.buttonStyle(.bordered)
                         .buttonBorderShape(.roundedRectangle(radius: 1))
@@ -127,11 +155,14 @@ struct BaseView: View {
                         .foregroundColor(Color(UIColor(hex: 0xE84D4D)))
                         .bold()
                         .frame(width: 300, height: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .disabled(timerVM.isActive)
+                    
                         
                     
                     
                 }.frame(width: screenSize.width - 150, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                     .padding() //Start Button
+                    
             
                 
                 
@@ -141,15 +172,18 @@ struct BaseView: View {
                 .cornerRadius(18)
                 .padding(20) //Timer Section
                  
-                                
             
+        
             
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
             .background(Color(UIColor(hex: 0xE84D4D)))
             .ignoresSafeArea() //Screen
         
+       
     }
 }
+
+
   
 #Preview {
     BaseView()
