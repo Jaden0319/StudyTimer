@@ -21,25 +21,37 @@ extension BaseView {
         
         private var initialTime = 0
         private var endDate = Date()
+        private var remainingTime: TimeInterval = 0
         
         func start(minutes: Float) {
             
-            self.initialTime = Int(minutes)
-            self.endDate = Date()
+            if remainingTime <= 0 {
+                self.initialTime = Int(minutes)
+                self.endDate = Date()
+                self.endDate = Calendar.current.date(byAdding: .minute, value: Int(minutes), to: endDate)!
+            }
+            else {
+                self.endDate = Date().addingTimeInterval(remainingTime)
+            }
+            
             self.isActive = true
-            self.endDate = Calendar.current.date(byAdding: .minute, value: Int(minutes), to: endDate)!
+            self.remainingTime = 0
+         
         }
         
         func pause() {
-            
-            //add function to pause
-            
+           
+            guard isActive else { return }
+                let now = Date()
+                remainingTime = endDate.timeIntervalSince(now)
+                isActive = false 
         }
         
-        func resset() {
+        func reset() {
             self.minutes = Float(initialTime)
             self.isActive = false
             self.time = "\(Int(minutes)):00"
+            self.remainingTime = 0
         }
         
         func updateCountdown() {
