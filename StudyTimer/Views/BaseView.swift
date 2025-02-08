@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftData
 import AVFoundation
-
 var screenSize:CGSize = UIScreen.main.bounds.size
 
 struct BaseView: View {
@@ -119,7 +118,7 @@ struct BaseView: View {
                         Text("\(timerVM.time)")
                             .font(.system(size: 55, weight: .medium, design: .rounded))
                             .alert("Timer Done!", isPresented: $timerVM.showingAlert) {
-                                //Code for Finished timer
+                            
                             }
                             .padding()
                             .cornerRadius(20)
@@ -129,6 +128,11 @@ struct BaseView: View {
                         
                     }.onReceive(timer) { _ in
                         timerVM.updateCountdown()
+                        
+                        if(!timerVM.isActive) {
+                            startText = "Start"
+                        }
+                        
                         
                     }
                     
@@ -172,7 +176,6 @@ struct BaseView: View {
             .background(Color(UIColor(hex: 0xE84D4D)))
             .ignoresSafeArea() //Screen
         
-       
     }
 }
 

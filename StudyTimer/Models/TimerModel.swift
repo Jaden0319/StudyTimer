@@ -12,8 +12,8 @@ extension BaseView {
     final class TimerModel: ObservableObject {
         @Published var isActive = false
         @Published var showingAlert = false
-        @Published var time: String = "25:00"
-        @Published var minutes: Float = 25.0 {
+        @Published var time: String = "1:00"
+        @Published var minutes: Float = 1.0 {
             didSet {
                 self.time = "\(Int(minutes)):00"
             }
@@ -71,7 +71,8 @@ extension BaseView {
             if(diff <= 0) {
                 self.isActive = false
                 self.time = "0:00"
-                self.showingAlert = true //Where to add notifs
+                self.showingAlert = true
+                self.reset() //Where to add notifs
                 return
             }
             
