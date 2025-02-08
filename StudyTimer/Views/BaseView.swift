@@ -72,7 +72,7 @@ struct BaseView: View {
                 //Edit in size func for scale (60)
                 //Top Navigation
             
-            Divider()  //End of top navigation
+            Divider() //End of top navigation
                 .frame(width: screenSize.width - 55, alignment: .top)
                 .background(Color.black)
                 .opacity(0.6)
