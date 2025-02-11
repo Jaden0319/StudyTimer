@@ -12,8 +12,8 @@ extension BaseView {
     final class TimerModel: ObservableObject {
         @Published var isActive = false
         @Published var showingAlert = false
-        @Published var time: String = "1:00"
-        @Published var minutes: Float = 1.0 {
+        @Published var time: String = "25:00"
+        @Published var minutes: Float = 25.0 {
             didSet {
                 self.time = "\(Int(minutes)):00"
             }
@@ -61,6 +61,7 @@ extension BaseView {
             self.isActive = false
             self.time = "\(Int(minutes)):00"
             self.remainingTime = 0
+            
         }
         
         func updateCountdown() {
@@ -68,11 +69,12 @@ extension BaseView {
             let now = Date()
             let diff = endDate.timeIntervalSince1970 - now.timeIntervalSince1970
             
-            if(diff <= 0) {
+            if(diff <= 0) { //When timer ends
                 self.isActive = false
                 self.time = "0:00"
                 self.showingAlert = true
-                self.reset() //Where to add notifs
+                self.reset()
+                //Where to add notifs
                 return
             }
             
@@ -80,6 +82,7 @@ extension BaseView {
             let calander = Calendar.current
             let minutes = calander.component(.minute, from: date)
             let seconds = calander.component(.second, from: date)
+            
             
             self.minutes = Float(minutes)
             self.time = String(format: "%d:%02d", minutes, seconds)

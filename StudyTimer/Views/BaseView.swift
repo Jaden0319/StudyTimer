@@ -10,11 +10,15 @@ import SwiftData
 import AVFoundation
 var screenSize:CGSize = UIScreen.main.bounds.size
 
+
+
 struct BaseView: View {
     
     @StateObject private var timerVM = TimerModel()
+    @StateObject private var settingsVM = SettingsModel()
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var startText: String = "Start"
+   
     
     var body: some View {
         
@@ -81,32 +85,58 @@ struct BaseView: View {
                 HStack { //Top Button Controls
                     
                     Button("StudyTime") {
+                        
+                        settingsVM.backgroundColor = settingsVM.mode_color["StudyTime"] ?? 0xE84D4D
+                        settingsVM.mode = "StudyTime"
+                        timerVM.reset()
+                        timerVM.minutes = settingsVM.mode_time["StudyTime"] ?? 25.0
+                        
+                        
                         //Add Button Action
                     }.font(.system(size: 16))
                     .bold()
                     .font(.largeTitle)
-                    .foregroundColor(.white)
+                    .foregroundColor(settingsVM.mode == "StudyTime" ? .black : .white)
                     .padding(2)
+                    .disabled(settingsVM.mode == "StudyTime")
+                    
+                
                    
                     Spacer()
                    
                     Button("Short Break") {
-                        //Add Button Action
+                        
+                        settingsVM.backgroundColor = settingsVM.mode_color["ShortBreak"] ?? 0x2eaace
+                        settingsVM.mode = "ShortBreak"
+        
+                        //Save time before reset for leaderboard in future if in StudyTime
+                        timerVM.reset()
+                        timerVM.minutes = settingsVM.mode_time["ShortBreak"] ?? 5.0
+                        
                     }.font(.system(size: 16))
                         .bold()
                         .font(.largeTitle)
-                        .foregroundColor(.white)
+                        .foregroundColor(settingsVM.mode == "ShortBreak" ? .black : .white)
                         .padding(2)
+                        .disabled(settingsVM.mode == "ShortBreak")
                
                    Spacer()
                         
                     Button("Long Break") {
-                        //Add Button Action
+                        
+                        settingsVM.backgroundColor = settingsVM.mode_color["LongBreak"] ?? 0x11669c
+                        settingsVM.mode = "LongBreak"
+                        //Save time before reset for leaderboard in future if in StudyTime
+                        timerVM.reset()
+                        timerVM.minutes = settingsVM.mode_time["LongBreak"] ?? 10.0
+                        
                     }.font(.system(size: 16))
                         .bold()
                         .font(.largeTitle)
-                        .foregroundColor(.white)
+                        .foregroundColor(settingsVM.mode == "LongBreak" ? .black : .white)
                         .padding(2)
+                        .disabled(settingsVM.mode == "LongBreak")
+                        
                         
                        
                 }.frame(width: screenSize.width - 90, height: 50, alignment: .leading) //Top Button Controls
@@ -118,19 +148,57 @@ struct BaseView: View {
                         Text("\(timerVM.time)")
                             .font(.system(size: 55, weight: .medium, design: .rounded))
                             .alert("Timer Done!", isPresented: $timerVM.showingAlert) {
-                            
+                                
+                               
+                                
+
                             }
                             .padding()
                             .cornerRadius(20)
                             .frame(width: screenSize.width - 190, height: 90)
                             .foregroundColor(.white)
-                           
-                        
+                            
+                            
                     }.onReceive(timer) { _ in
                         timerVM.updateCountdown()
                         
                         if(!timerVM.isActive) {
                             startText = "Start"
+                        }
+                        
+                        if(!timerVM.isActive && timerVM.showingAlert) {
+                            
+                            //Save time before reset for leaderboard in future if in StudyTime
+                            //Add Code for alternating between breaks
+                            
+                            timerVM.reset()
+                            
+                            
+                            AudioServicesPlaySystemSound(1026)
+                            
+                            if(settingsVM.mode == "StudyTime") {
+                                
+                                if(settingsVM.breakCount == settingsVM.longBreakIntv) {
+                                    settingsVM.mode = "LongBreak"
+                                    settingsVM.breakCount = 0
+                                }
+                                else if (settingsVM.breakCount < settingsVM.longBreakIntv) {
+                                    settingsVM.mode = "ShortBreak"
+                                    settingsVM.breakCount += 1
+                                }
+                            }
+                            else if(settingsVM.mode == "ShortBreak") {
+                                settingsVM.mode = "StudyTime"
+                            }
+                            else if(settingsVM.mode == "LongBreak") {
+                                settingsVM.mode = "StudyTime"
+                            }
+                            
+                            
+                            
+                            timerVM.showingAlert = false
+                            
+                            
                         }
                         
                         
@@ -158,7 +226,7 @@ struct BaseView: View {
                     }.buttonStyle(.bordered)
                         .buttonBorderShape(.roundedRectangle(radius: 1))
                         .background(Color.white)
-                        .foregroundColor(Color(UIColor(hex: 0xE84D4D)))
+                        .foregroundColor(Color(UIColor(hex: settingsVM.backgroundColor)))
                         .bold()
                         .frame(width: 300, height: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                         
@@ -168,12 +236,13 @@ struct BaseView: View {
                     
 
             }.frame(width: screenSize.width - 50, height: (screenSize.height / 3), alignment: .top)
-                .background(Color(UIColor(hex: 0xE07879)))
+                .background(Color(UIColor(hex: settingsVM.backgroundColor)))
                 .cornerRadius(18)
                 .padding(20) //Timer Section
-
+                .brightness(0.14)
+            
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
-            .background(Color(UIColor(hex: 0xE84D4D)))
+            .background(Color(UIColor(hex: settingsVM.backgroundColor)))
             .ignoresSafeArea() //Screen
         
     }
