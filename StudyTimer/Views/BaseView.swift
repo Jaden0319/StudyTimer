@@ -85,49 +85,50 @@ struct BaseView: View {
                     
                     Button("StudyTime") {
                         
-                        settingsVM.mode = 0 //0: StudyTime 1: Short 2: Long
+                        settingsVM.setMode(mode: 0) //0: StudyTime 1: Short 2: Long
                         timerVM.reset()
-                        timerVM.minutes = settingsVM.mode_times[0]
+                        timerVM.minutes = settingsVM.getModeTime(mode: 0)
             
                         //Add Button Action
                     }.font(.system(size: 16))
                     .bold()
                     .font(.largeTitle)
-                    .foregroundColor(settingsVM.mode == 0 ? .black : .white)
+                    .foregroundColor(settingsVM.isStudyTime() ? .black : .white)
                     .padding(2)
-                    .disabled(settingsVM.mode == 0)
+                    .disabled(settingsVM.isStudyTime())
+                   
                     
                     Spacer()
                    
                     Button("Short Break") {
                         
-                        settingsVM.mode = 1
+                        settingsVM.setMode(mode: 1)
                         //Save time before reset for leaderboard in future if in StudyTime
                         timerVM.reset()
-                        timerVM.minutes = settingsVM.mode_times[1]
+                        timerVM.minutes = settingsVM.getModeTime(mode: 1)
                         
                     }.font(.system(size: 16))
                         .bold()
                         .font(.largeTitle)
-                        .foregroundColor(settingsVM.mode == 1 ? .black : .white)
+                        .foregroundColor(settingsVM.isShortBreak() ? .black : .white)
                         .padding(2)
-                        .disabled(settingsVM.mode == 1)
+                        .disabled(settingsVM.isShortBreak())
                
                    Spacer()
                         
                     Button("Long Break") {
                         
-                        settingsVM.mode = 2
+                        settingsVM.setMode(mode: 2)
                         //Save time before reset for leaderboard in future if in StudyTime
                         timerVM.reset()
-                        timerVM.minutes = settingsVM.mode_times[2]
+                        timerVM.minutes = settingsVM.getModeTime(mode: 2)
                         
                     }.font(.system(size: 16))
                         .bold()
                         .font(.largeTitle)
-                        .foregroundColor(settingsVM.mode == 2 ? .black : .white)
+                        .foregroundColor(settingsVM.isLongBreak() ? .black : .white)
                         .padding(2)
-                        .disabled(settingsVM.mode == 2)
+                        .disabled(settingsVM.isLongBreak())
                         
                         
                 }.frame(width: screenSize.width - 90, height: 50, alignment: .leading) //Top Button Controls
@@ -158,29 +159,9 @@ struct BaseView: View {
                         if(!timerVM.isActive && timerVM.showingAlert) {
                             
                             //Save time before reset for leaderboard in future if in StudyTime
-
                             timerVM.reset()
-                            
                             AudioServicesPlaySystemSound(1026)
-                            
-                            if(settingsVM.mode == 0) {
-                                
-                                if(settingsVM.breakCount == settingsVM.longBreakIntv) {
-                                    settingsVM.mode = 2
-                                    settingsVM.breakCount = 0
-                                }
-                                else if (settingsVM.breakCount < settingsVM.longBreakIntv) {
-                                    settingsVM.mode = 1
-                                    settingsVM.breakCount += 1
-                                }
-                            }
-                            else if(settingsVM.mode == 1) {
-                                settingsVM.mode = 0
-                            }
-                            else if(settingsVM.mode == 2) {
-                                settingsVM.mode = 0
-                            }
-                            
+                            settingsVM.nextMode()
                             timerVM.showingAlert = false
                         }
                         
@@ -197,13 +178,13 @@ struct BaseView: View {
                         if(!timerVM.isActive) {
                             timerVM.start(minutes: timerVM.minutes)
                             startText = "Pause"
-                            AudioServicesPlaySystemSound(1104)
                         }
                         else {
                             timerVM.pause()
                             startText = "Start"
-                            AudioServicesPlaySystemSound(1104)
                         }
+                        
+                        AudioServicesPlaySystemSound(1104)
 
                     }.buttonStyle(.bordered)
                         .buttonBorderShape(.roundedRectangle(radius: 1))
@@ -211,6 +192,7 @@ struct BaseView: View {
                         .foregroundColor(Color(UIColor(hex: settingsVM.backgroundColor)))
                         .bold()
                         .frame(width: 300, height: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .shadow(radius: 5)
                         
                         
     
