@@ -11,15 +11,14 @@ import AVFoundation
 var screenSize:CGSize = UIScreen.main.bounds.size
 
 
-
 struct BaseView: View {
     
     @StateObject private var timerVM = TimerModel()
     @StateObject private var settingsVM = SettingsModel()
+    
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var startText: String = "Start"
    
-    
     var body: some View {
         
         VStack { //Screen
@@ -86,59 +85,51 @@ struct BaseView: View {
                     
                     Button("StudyTime") {
                         
-                        settingsVM.backgroundColor = settingsVM.mode_color["StudyTime"] ?? 0xE84D4D
-                        settingsVM.mode = "StudyTime"
+                        settingsVM.mode = 0 //0: StudyTime 1: Short 2: Long
                         timerVM.reset()
-                        timerVM.minutes = settingsVM.mode_time["StudyTime"] ?? 25.0
-                        
-                        
+                        timerVM.minutes = settingsVM.mode_times[0]
+            
                         //Add Button Action
                     }.font(.system(size: 16))
                     .bold()
                     .font(.largeTitle)
-                    .foregroundColor(settingsVM.mode == "StudyTime" ? .black : .white)
+                    .foregroundColor(settingsVM.mode == 0 ? .black : .white)
                     .padding(2)
-                    .disabled(settingsVM.mode == "StudyTime")
+                    .disabled(settingsVM.mode == 0)
                     
-                
-                   
                     Spacer()
                    
                     Button("Short Break") {
                         
-                        settingsVM.backgroundColor = settingsVM.mode_color["ShortBreak"] ?? 0x2eaace
-                        settingsVM.mode = "ShortBreak"
-        
+                        settingsVM.mode = 1
                         //Save time before reset for leaderboard in future if in StudyTime
                         timerVM.reset()
-                        timerVM.minutes = settingsVM.mode_time["ShortBreak"] ?? 5.0
+                        timerVM.minutes = settingsVM.mode_times[1]
                         
                     }.font(.system(size: 16))
                         .bold()
                         .font(.largeTitle)
-                        .foregroundColor(settingsVM.mode == "ShortBreak" ? .black : .white)
+                        .foregroundColor(settingsVM.mode == 1 ? .black : .white)
                         .padding(2)
-                        .disabled(settingsVM.mode == "ShortBreak")
+                        .disabled(settingsVM.mode == 1)
                
                    Spacer()
                         
                     Button("Long Break") {
                         
-                        settingsVM.backgroundColor = settingsVM.mode_color["LongBreak"] ?? 0x11669c
-                        settingsVM.mode = "LongBreak"
+                        settingsVM.mode = 2
                         //Save time before reset for leaderboard in future if in StudyTime
                         timerVM.reset()
-                        timerVM.minutes = settingsVM.mode_time["LongBreak"] ?? 10.0
+                        timerVM.minutes = settingsVM.mode_times[2]
                         
                     }.font(.system(size: 16))
                         .bold()
                         .font(.largeTitle)
-                        .foregroundColor(settingsVM.mode == "LongBreak" ? .black : .white)
+                        .foregroundColor(settingsVM.mode == 2 ? .black : .white)
                         .padding(2)
-                        .disabled(settingsVM.mode == "LongBreak")
+                        .disabled(settingsVM.mode == 2)
                         
                         
-                       
                 }.frame(width: screenSize.width - 90, height: 50, alignment: .leading) //Top Button Controls
                 
                 HStack { //Clock Section
@@ -150,8 +141,6 @@ struct BaseView: View {
                             .alert("Timer Done!", isPresented: $timerVM.showingAlert) {
                                 
                                
-                                
-
                             }
                             .padding()
                             .cornerRadius(20)
@@ -169,38 +158,31 @@ struct BaseView: View {
                         if(!timerVM.isActive && timerVM.showingAlert) {
                             
                             //Save time before reset for leaderboard in future if in StudyTime
-                            //Add Code for alternating between breaks
-                            
+
                             timerVM.reset()
-                            
                             
                             AudioServicesPlaySystemSound(1026)
                             
-                            if(settingsVM.mode == "StudyTime") {
+                            if(settingsVM.mode == 0) {
                                 
                                 if(settingsVM.breakCount == settingsVM.longBreakIntv) {
-                                    settingsVM.mode = "LongBreak"
+                                    settingsVM.mode = 2
                                     settingsVM.breakCount = 0
                                 }
                                 else if (settingsVM.breakCount < settingsVM.longBreakIntv) {
-                                    settingsVM.mode = "ShortBreak"
+                                    settingsVM.mode = 1
                                     settingsVM.breakCount += 1
                                 }
                             }
-                            else if(settingsVM.mode == "ShortBreak") {
-                                settingsVM.mode = "StudyTime"
+                            else if(settingsVM.mode == 1) {
+                                settingsVM.mode = 0
                             }
-                            else if(settingsVM.mode == "LongBreak") {
-                                settingsVM.mode = "StudyTime"
+                            else if(settingsVM.mode == 2) {
+                                settingsVM.mode = 0
                             }
-                            
-                            
                             
                             timerVM.showingAlert = false
-                            
-                            
                         }
-                        
                         
                     }
                     
@@ -229,6 +211,7 @@ struct BaseView: View {
                         .foregroundColor(Color(UIColor(hex: settingsVM.backgroundColor)))
                         .bold()
                         .frame(width: 300, height: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        
                         
     
                 }.frame(width: screenSize.width - 150, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
