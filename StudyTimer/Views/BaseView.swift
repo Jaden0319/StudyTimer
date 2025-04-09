@@ -5,17 +5,17 @@
 //  Created by Jaden Creech on 2/3/25.
 //  View of main screen 
 
+
 import SwiftUI
 import SwiftData
 import AVFoundation
 var screenSize:CGSize = UIScreen.main.bounds.size
 
-
 struct BaseView: View {
     
     @StateObject private var timerVM = TimerModel()
     @StateObject private var settingsVM = SettingsModel()
-    
+       
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var startText: String = "Start"
    
@@ -88,7 +88,6 @@ struct BaseView: View {
                         settingsVM.setMode(mode: 0) //0: StudyTime 1: Short 2: Long
                         timerVM.reset()
                         timerVM.minutes = settingsVM.getModeTime(mode: 0)
-            
                         //Add Button Action
                     }.font(.system(size: 16))
                     .bold()
@@ -97,11 +96,10 @@ struct BaseView: View {
                     .padding(2)
                     .disabled(settingsVM.isStudyTime())
                    
-                    
                     Spacer()
                    
                     Button("Short Break") {
-                        
+                    
                         settingsVM.setMode(mode: 1)
                         //Save time before reset for leaderboard in future if in StudyTime
                         timerVM.reset()
@@ -131,7 +129,8 @@ struct BaseView: View {
                         .disabled(settingsVM.isLongBreak())
                         
                         
-                }.frame(width: screenSize.width - 90, height: 50, alignment: .leading) //Top Button Controls
+                }.frame(width: screenSize.width - 70, height: 50, alignment: .leading)
+                    //Top Button Controls
                 
                 HStack { //Clock Section
                     
@@ -145,10 +144,11 @@ struct BaseView: View {
                             }
                             .padding()
                             .cornerRadius(20)
-                            .frame(width: screenSize.width - 190, height: 90)
+                            .frame(width: screenSize.width - 80, height: 90)
                             .foregroundColor(.white)
+                           
                             
-                            
+                          
                     }.onReceive(timer) { _ in
                         timerVM.updateCountdown()
                         
@@ -158,7 +158,6 @@ struct BaseView: View {
                         
                         if(!timerVM.isActive && timerVM.showingAlert) {
                             
-                            //Save time before reset for leaderboard in future if in StudyTime
                             timerVM.reset()
                             AudioServicesPlaySystemSound(1026)
                             settingsVM.nextMode()
@@ -170,7 +169,6 @@ struct BaseView: View {
                 }.frame(width: screenSize.width - 80, height: 110, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                     .padding(5)
                     //Clock Section
-                
                 VStack {  //Start Button
                     
                     Button("\(startText)") {
@@ -209,7 +207,6 @@ struct BaseView: View {
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
             .background(Color(UIColor(hex: settingsVM.backgroundColor)))
             .ignoresSafeArea() //Screen
-        
     }
 }
 

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 extension UIColor {
-
+    
     convenience init(hex: Int) {   //hex -> UIColor
         let components = (
             R: CGFloat((hex >> 16) & 0xff) / 255,
@@ -18,9 +18,9 @@ extension UIColor {
         )
         self.init(red: components.R, green: components.G, blue: components.B, alpha: 1)
     }
-    
-    
 }
+
+
    
 
 

@@ -7,14 +7,11 @@
 
 import Foundation
 
-
-extension BaseView {
-    
     final class SettingsModel: ObservableObject {
         
         private final var modes: [String: Int] = ["StudyTime": 0, "ShortBreak": 1, "LongBreak": 2]
         @Published var mode_colors: [Int] = [0xE84D4D, 0x2eaace, 0x11669c]
-        @Published private var mode_times: [Float] = [1.0, 1.0, 1.0]
+        @Published private var mode_times: [Float] = [25.0, 5.0, 10.0]
         @Published var backgroundColor: Int = 0xE84D4D
         
         @Published private var mode: Int = 0 {
@@ -82,4 +79,3 @@ extension BaseView {
         }
         
     }
-}
