@@ -7,15 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EFBBF0312D600FB800FB3D6E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBBF0302D600FB800FB3D6E /* SettingsView.swift */; };
 		EFD72AD62D51994D00BF0B44 /* StudyTimerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AD52D51994D00BF0B44 /* StudyTimerApp.swift */; };
 		EFD72AD82D51994D00BF0B44 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AD72D51994D00BF0B44 /* BaseView.swift */; };
 		EFD72ADA2D51994D00BF0B44 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AD92D51994D00BF0B44 /* Item.swift */; };
 		EFD72ADC2D51994E00BF0B44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFD72ADB2D51994E00BF0B44 /* Assets.xcassets */; };
 		EFD72ADF2D51994E00BF0B44 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EFD72ADE2D51994E00BF0B44 /* Preview Assets.xcassets */; };
 		EFD72AE62D51A1E500BF0B44 /* ColorUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AE52D51A1E500BF0B44 /* ColorUtil.swift */; };
+		EFD72AEF2D56A79900BF0B44 /* TimerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AEE2D56A79900BF0B44 /* TimerModel.swift */; };
+		EFD72AF32D5A99F700BF0B44 /* SettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFD72AF22D5A99F700BF0B44 /* SettingsModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EFBBF0302D600FB800FB3D6E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		EFD72AD22D51994D00BF0B44 /* StudyTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudyTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFD72AD52D51994D00BF0B44 /* StudyTimerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyTimerApp.swift; sourceTree = "<group>"; };
 		EFD72AD72D51994D00BF0B44 /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
@@ -23,6 +27,8 @@
 		EFD72ADB2D51994E00BF0B44 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EFD72ADE2D51994E00BF0B44 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EFD72AE52D51A1E500BF0B44 /* ColorUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorUtil.swift; sourceTree = "<group>"; };
+		EFD72AEE2D56A79900BF0B44 /* TimerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerModel.swift; sourceTree = "<group>"; };
+		EFD72AF22D5A99F700BF0B44 /* SettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				EFD72AD72D51994D00BF0B44 /* BaseView.swift */,
+				EFBBF0302D600FB800FB3D6E /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -93,6 +100,8 @@
 		EFD72AE92D51B1A600BF0B44 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				EFD72AEE2D56A79900BF0B44 /* TimerModel.swift */,
+				EFD72AF22D5A99F700BF0B44 /* SettingsModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -167,8 +176,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFBBF0312D600FB800FB3D6E /* SettingsView.swift in Sources */,
+				EFD72AF32D5A99F700BF0B44 /* SettingsModel.swift in Sources */,
 				EFD72AE62D51A1E500BF0B44 /* ColorUtil.swift in Sources */,
 				EFD72AD82D51994D00BF0B44 /* BaseView.swift in Sources */,
+				EFD72AEF2D56A79900BF0B44 /* TimerModel.swift in Sources */,
 				EFD72ADA2D51994D00BF0B44 /* Item.swift in Sources */,
 				EFD72AD62D51994D00BF0B44 /* StudyTimerApp.swift in Sources */,
 			);

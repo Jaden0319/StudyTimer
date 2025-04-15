@@ -5,14 +5,16 @@ import SwiftUI
 
 /* Need to add Back button 
    Need initalizer to pass values from settingsModel
-   Want to make view scrollable eventually*/
+   Want to make view scrollable eventually, Need to add arrow functionaility for changing time, also should vaerify constraints. Debatng enabily textfield or just using arrows.*/
+  
+
 
 
 struct SettingsView: View {
 
-    @State private var studyMins: String = "25:00"
-    @State private var shortBreakMins: String = "5:00"
-    @State private var longBreakMins: String = "10:00"
+    @State private var studyMins: String = "25"
+    @State private var shortBreakMins: String = "5"
+    @State private var longBreakMins: String = "10"
     
     //add vars that pass data back in forth between models when settings are updated
     var body: some View {
@@ -67,18 +69,33 @@ struct SettingsView: View {
                         .hoverEffect()
                         
                     
-                    
                     HStack { //StudyTimer edit section, Need to work on touch area for setting time without arrows
        
-                        TextField("\(studyMins):", text: $studyMins)
+                        TextField("\(studyMins)", text: $studyMins)
                             //.background(Color.green)
                             .frame(width: ((screenSize.width / 3.5) - 54), height: 50, alignment: .center)
                             .padding(.leading, 10)
                             .scaledToFit()
+                            .disabled(true)
+                            
+                        VStack {    //Add button controls, possible change of styling
+                            
+                            Image(systemName: "arrowtriangle.up.fill")
+                                .scaledToFit()
+                                .padding(.top, 15)
+                                
+                            
+                            Spacer()
+                            
+                            Image(systemName: "arrowtriangle.down.fill")
+                                .scaledToFit()
+                                .padding(.bottom, 15)
                             
                             
+                        }
                         
-                        Divider()
+                        
+                     
                         
                         
                     }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
@@ -106,15 +123,30 @@ struct SettingsView: View {
                     
                     HStack { //StudyTimer edit section, Need to work on touch area for setting time without arrows
        
-                        TextField("\(shortBreakMins):", text: $shortBreakMins)
+                        TextField("\(shortBreakMins)", text: $shortBreakMins)
                             //.background(Color.green)
                             .frame(width: ((screenSize.width / 3.5) - 54), height: 50, alignment: .center)
                             .padding(.leading, 10)
                             .scaledToFit()
+                            .disabled(true)
                             
                             
                         
-                        Divider()
+                        
+                        VStack {
+                            
+                            Image(systemName: "arrowtriangle.up.fill")
+                                .scaledToFit()
+                                .padding(.top, 15)
+                            
+                            Spacer()
+                            
+                            Image(systemName: "arrowtriangle.down.fill")
+                                .scaledToFit()
+                                .padding(.bottom, 15)
+                            
+                            
+                        }
                         
                         
                     }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
@@ -138,14 +170,27 @@ struct SettingsView: View {
                     
                     HStack { //StudyTimer edit section, Need to work on touch area for setting time without arrows
        
-                        TextField("\(longBreakMins):", text: $longBreakMins)
+                        TextField("\(longBreakMins)", text: $longBreakMins)
                             //.background(Color.green)
                             .frame(width: ((screenSize.width / 3.5) - 54), height: 50, alignment: .center)
                             .padding(.leading, 10)
+                            .disabled(true)
+                            
+       
+                        VStack {
+                            
+                            Image(systemName: "arrowtriangle.up.fill")
+                                .scaledToFit()
+                                .padding(.top, 15)
+                            
+                            Spacer()
+                            
+                            Image(systemName: "arrowtriangle.down.fill")
+                                .scaledToFit()
+                                .padding(.bottom, 15)
                             
                             
-                        
-                        Divider()
+                        }
                         
                         
                     }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
@@ -153,9 +198,7 @@ struct SettingsView: View {
                     .cornerRadius(8.0)
                     .padding(.trailing, 10)
                    
-                    
-                    
-   
+                
                     
                 }.frame(width: screenSize.width / 3.5, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: .top)
                    
