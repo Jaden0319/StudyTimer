@@ -1,7 +1,7 @@
 
 import Foundation
 import SwiftUI
-
+import AVFoundation
 
 /* Need to add Back button 
    Need initalizer to pass values from settingsModel
@@ -15,6 +15,7 @@ struct SettingsView: View {
     @State private var studyMins: String = "25"
     @State private var shortBreakMins: String = "5"
     @State private var longBreakMins: String = "10"
+    @State private var settingsModel: SettingsModel = SettingsModel() //in future will get from database potentially, or local settings
     
     //add vars that pass data back in forth between models when settings are updated
     var body: some View {
@@ -83,6 +84,10 @@ struct SettingsView: View {
                             Image(systemName: "arrowtriangle.up.fill")
                                 .scaledToFit()
                                 .padding(.top, 15)
+                                .onTapGesture {
+                                    studyMins = incrementFormattedNumericString(numericString: studyMins) ?? studyMins
+                                    settingsModel.setModeTime(mode: 0, time: Float(studyMins) ?? 25)
+                                }
                                 
                             
                             Spacer()
@@ -90,6 +95,10 @@ struct SettingsView: View {
                             Image(systemName: "arrowtriangle.down.fill")
                                 .scaledToFit()
                                 .padding(.bottom, 15)
+                                .onTapGesture {
+                                    studyMins = decrementFormattedNumericString(numericString: studyMins) ?? studyMins
+                                    settingsModel.setModeTime(mode: 0, time: Float(studyMins) ?? 25)
+                                }
                             
                             
                         }
@@ -102,8 +111,6 @@ struct SettingsView: View {
                     .background(Color(UIColor(hex: 0xefefef)))
                     .cornerRadius(8.0)
                     .padding(.leading, 5)
-                    
-                    
                     
                     
                     
@@ -138,12 +145,20 @@ struct SettingsView: View {
                             Image(systemName: "arrowtriangle.up.fill")
                                 .scaledToFit()
                                 .padding(.top, 15)
+                                .onTapGesture {
+                                    shortBreakMins = incrementFormattedNumericString(numericString: shortBreakMins) ?? shortBreakMins
+                                    settingsModel.setModeTime(mode: 1, time: Float(shortBreakMins) ?? 5)
+                                }
                             
                             Spacer()
                             
                             Image(systemName: "arrowtriangle.down.fill")
                                 .scaledToFit()
                                 .padding(.bottom, 15)
+                                .onTapGesture {
+                                    shortBreakMins = decrementFormattedNumericString(numericString: shortBreakMins) ?? shortBreakMins
+                                    settingsModel.setModeTime(mode: 1, time: Float(shortBreakMins) ?? 5)
+                                }
                             
                             
                         }
@@ -182,12 +197,24 @@ struct SettingsView: View {
                             Image(systemName: "arrowtriangle.up.fill")
                                 .scaledToFit()
                                 .padding(.top, 15)
+                                .onTapGesture {
+                                    longBreakMins = incrementFormattedNumericString(numericString: longBreakMins) ?? longBreakMins
+                                    settingsModel.setModeTime(mode: 2, time: Float(longBreakMins) ?? 10)
+                                    
+                                }
                             
                             Spacer()
                             
                             Image(systemName: "arrowtriangle.down.fill")
                                 .scaledToFit()
                                 .padding(.bottom, 15)
+                                .onTapGesture {
+                                    longBreakMins = decrementFormattedNumericString(numericString: longBreakMins) ?? longBreakMins
+                                    settingsModel.setModeTime(mode: 2, time: Float(longBreakMins) ?? 10)
+                                        
+                                
+                                }
+                                
                             
                             
                         }
@@ -197,14 +224,9 @@ struct SettingsView: View {
                     .background(Color(UIColor(hex: 0xefefef)))
                     .cornerRadius(8.0)
                     .padding(.trailing, 10)
-                   
-                
-                    
+     
                 }.frame(width: screenSize.width / 3.5, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: .top)
                    
-                
-                
-                
             }.frame(width: screenSize.width, height: 95, alignment: .leading)
                 
                 
@@ -213,6 +235,32 @@ struct SettingsView: View {
             .background(Color.white)
     }
 }
+
+func incrementFormattedNumericString(numericString:String, increment by:Int=1) -> String? {
+    
+    guard let numericValue = Int(numericString) else {
+        return nil }
+    
+    if(numericValue == 90) {
+        AudioServicesPlaySystemSound(1104)
+        return String(format: "%d", numericValue)
+    }
+   
+    return String(format: "%d", numericValue + by)
+}
+
+func decrementFormattedNumericString(numericString:String, decrement by:Int=1) -> String? {
+    
+    guard let numericValue = Int(numericString) else { return nil }
+    
+    if(numericValue == 1) {
+        AudioServicesPlaySystemSound(1104)
+        return String(format: "%d", numericValue)
+        
+    }
+    return String(format: "%d", numericValue - by)
+}
+
 
 #Preview {
     SettingsView()

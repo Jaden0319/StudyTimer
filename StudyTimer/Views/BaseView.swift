@@ -85,7 +85,7 @@ struct BaseView: View {
                     
                     Button("StudyTime") {
                         
-                        settingsVM.setMode(mode: 0) //0: StudyTime 1: Short 2: Long
+                        settingsVM.setMode(mode: 0) //0: StudyTime 1: Short 2: long
                         timerVM.reset()
                         timerVM.minutes = settingsVM.getModeTime(mode: 0)
                         //Add Button Action
@@ -209,8 +209,6 @@ struct BaseView: View {
             .ignoresSafeArea() //Screen
     }
 }
-
-  
 #Preview {
     BaseView()
         
