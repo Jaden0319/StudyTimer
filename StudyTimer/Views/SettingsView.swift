@@ -15,7 +15,15 @@ struct SettingsView: View {
     @State private var studyMins: String = "25"
     @State private var shortBreakMins: String = "5"
     @State private var longBreakMins: String = "10"
-    @State private var settingsModel: SettingsModel = SettingsModel() //in future will get from database potentially, or local settings
+    @State private var settingsModel: SettingsModel = SettingsModel()
+    @State private var studyInc = false
+    @State private var studyDec = false
+    @State private var shortInc = false
+    @State private var shortDec = false
+    @State private var longInc = false
+    @State private var longDec = false
+    
+    //in future will get from database potentially, or local settings
     
     //add vars that pass data back in forth between models when settings are updated
     var body: some View {
@@ -84,34 +92,46 @@ struct SettingsView: View {
                             Image(systemName: "arrowtriangle.up.fill")
                                 .scaledToFit()
                                 .padding(.top, 15)
+                                .scaleEffect(studyInc ? 1.2 : 1.0)
+                                .animation(.easeInOut(duration: 0.2), value: studyInc)
                                 .onTapGesture {
                                     studyMins = incrementFormattedNumericString(numericString: studyMins) ?? studyMins
                                     settingsModel.setModeTime(mode: 0, time: Float(studyMins) ?? 25)
+                                    AudioServicesPlaySystemSound(1104)
+                                    studyInc = true
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        studyInc = false
+                                    }
                                 }
+                            
+                        Spacer()
+                            
                                 
-                            
-                            Spacer()
-                            
                             Image(systemName: "arrowtriangle.down.fill")
                                 .scaledToFit()
                                 .padding(.bottom, 15)
+                                .scaleEffect(studyDec ? 1.2 : 1.0)
+                                .animation(.easeInOut(duration: 0.2), value: studyDec)
                                 .onTapGesture {
                                     studyMins = decrementFormattedNumericString(numericString: studyMins) ?? studyMins
                                     settingsModel.setModeTime(mode: 0, time: Float(studyMins) ?? 25)
+                                    AudioServicesPlaySystemSound(1104)
+                                    studyDec = true
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        studyDec = false
+                                    }
                                 }
-                            
+                                .foregroundColor(Color.black)
                             
                         }
-                        
-                        
-                     
                         
                         
                     }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
                     .background(Color(UIColor(hex: 0xefefef)))
                     .cornerRadius(8.0)
                     .padding(.leading, 5)
-                    
                     
                     
                     
@@ -139,15 +159,24 @@ struct SettingsView: View {
                             
                             
                         
-                        
                         VStack {
                             
                             Image(systemName: "arrowtriangle.up.fill")
                                 .scaledToFit()
                                 .padding(.top, 15)
+                                .scaleEffect(shortInc ? 1.2 : 1.0)
+                                .animation(.easeInOut(duration: 0.2), value: shortInc)
                                 .onTapGesture {
                                     shortBreakMins = incrementFormattedNumericString(numericString: shortBreakMins) ?? shortBreakMins
                                     settingsModel.setModeTime(mode: 1, time: Float(shortBreakMins) ?? 5)
+                                    AudioServicesPlaySystemSound(1104)
+                                    shortInc = true
+                                    
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        shortInc = false
+                                    }
+                                    
                                 }
                             
                             Spacer()
@@ -155,10 +184,23 @@ struct SettingsView: View {
                             Image(systemName: "arrowtriangle.down.fill")
                                 .scaledToFit()
                                 .padding(.bottom, 15)
+                                .scaleEffect(shortDec ? 1.2 : 1.0)
+                                .animation(.easeInOut(duration: 0.2), value: shortDec)
                                 .onTapGesture {
                                     shortBreakMins = decrementFormattedNumericString(numericString: shortBreakMins) ?? shortBreakMins
                                     settingsModel.setModeTime(mode: 1, time: Float(shortBreakMins) ?? 5)
+                                    AudioServicesPlaySystemSound(1104)
+                                    shortDec = true
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        shortDec = false
+                                    }
+                                    
+                                    
+                                    
                                 }
+                            
+                            
                             
                             
                         }
@@ -197,9 +239,17 @@ struct SettingsView: View {
                             Image(systemName: "arrowtriangle.up.fill")
                                 .scaledToFit()
                                 .padding(.top, 15)
+                                .scaleEffect(longInc ? 1.2 : 1.0)
+                                .animation(.easeInOut(duration: 0.2), value: longInc)
                                 .onTapGesture {
                                     longBreakMins = incrementFormattedNumericString(numericString: longBreakMins) ?? longBreakMins
                                     settingsModel.setModeTime(mode: 2, time: Float(longBreakMins) ?? 10)
+                                    AudioServicesPlaySystemSound(1104)
+                                    longInc = true
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        longInc = false
+                                    }
                                     
                                 }
                             
@@ -208,11 +258,17 @@ struct SettingsView: View {
                             Image(systemName: "arrowtriangle.down.fill")
                                 .scaledToFit()
                                 .padding(.bottom, 15)
+                                .scaleEffect(longDec ? 1.2 : 1.0)
+                                .animation(.easeInOut(duration: 0.2), value: longDec)
                                 .onTapGesture {
                                     longBreakMins = decrementFormattedNumericString(numericString: longBreakMins) ?? longBreakMins
                                     settingsModel.setModeTime(mode: 2, time: Float(longBreakMins) ?? 10)
-                                        
-                                
+                                    AudioServicesPlaySystemSound(1104)
+                                    longDec = true
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        longDec = false
+                                    }
                                 }
                                 
                             
@@ -235,6 +291,9 @@ struct SettingsView: View {
             .background(Color.white)
     }
 }
+
+
+
 
 func incrementFormattedNumericString(numericString:String, increment by:Int=1) -> String? {
     
