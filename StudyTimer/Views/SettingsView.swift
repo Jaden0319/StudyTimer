@@ -11,17 +11,33 @@ import AVFoundation
 
 
 struct SettingsView: View {
+    
+    @State private var settingsModel: SettingsModel = SettingsModel()
+    
+    
 
     @State private var studyMins: String = "25"
     @State private var shortBreakMins: String = "5"
     @State private var longBreakMins: String = "10"
-    @State private var settingsModel: SettingsModel = SettingsModel()
+    @State private var longBreakIntv: String = "2"
+    
     @State private var studyInc = false
     @State private var studyDec = false
     @State private var shortInc = false
     @State private var shortDec = false
     @State private var longInc = false
     @State private var longDec = false
+    
+    @State private var longIntvInc = false
+    @State private var longIntvDec = false
+    
+    @State private var autoStartBreaks = false
+    @State private var autoStartStudy = false
+    
+    
+    
+    
+    
     
     //in future will get from database potentially, or local settings
     
@@ -99,6 +115,7 @@ struct SettingsView: View {
                                     settingsModel.setModeTime(mode: 0, time: Float(studyMins) ?? 25)
                                     AudioServicesPlaySystemSound(1104)
                                     studyInc = true
+                                    
                                     
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                         studyInc = false
@@ -285,6 +302,110 @@ struct SettingsView: View {
                    
             }.frame(width: screenSize.width, height: 95, alignment: .leading)
                 
+            
+            
+            VStack {
+                
+                HStack {
+      
+                    Text("Auto Start Breaks")
+                        .font(.system(size: 16))
+                        .bold()
+                        
+                    
+                    Toggle("", isOn: $autoStartBreaks).onChange(of: autoStartBreaks) { _, _ in
+                        autoStartBreaks.toggle()
+                        settingsModel.autoStartBreaksToggle()
+                    }
+                }.padding([.leading, .trailing], 10)
+                    .tint(Color.blue)
+                
+                HStack {
+      
+                    Text("Auto Start StudyTime")
+                        .font(.system(size: 16))
+                        .bold()
+                    
+                    Toggle("", isOn: $autoStartStudy).onChange(of: autoStartStudy) { _, _ in
+                        autoStartStudy.toggle()
+                        settingsModel.autoStartStudyToggle()
+                    }
+                }.padding([.leading, .trailing], 10)
+                    .tint(Color.blue)
+                
+                
+                
+                HStack {
+                    
+                    Text("Long Break Interval")
+                        .font(.system(size: 16))
+                        .bold()
+                    
+                    
+                    HStack {
+       
+                        TextField("\(longBreakIntv)", text: $longBreakIntv)
+                            .frame(width: ((screenSize.width / 3.5) - 54), height: 30, alignment: .center)
+                            .padding(.leading, 10)
+                            .scaledToFit()
+                            .disabled(true)
+                            
+                            
+                        
+                        VStack {
+                            
+                            Image(systemName: "arrowtriangle.up.fill")
+                                .scaledToFit()
+                                .padding(.top, 15)
+                                .scaleEffect(longIntvInc ? 1.2 : 1.0)
+                                .animation(.easeInOut(duration: 0.2), value: longIntvInc)
+                                .onTapGesture {
+                                    longBreakIntv = incrementFormattedNumericString(numericString: longBreakIntv) ?? longBreakIntv
+                                    settingsModel.setLongBreakIntv(intv: Int(longBreakIntv) ?? 2)
+                                    AudioServicesPlaySystemSound(1104)
+                                    longIntvInc = true
+            
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        longIntvInc = false
+                                    }
+                                    
+                                }
+                            
+                            Spacer()
+                            
+                            Image(systemName: "arrowtriangle.down.fill")
+                                .scaledToFit()
+                                .padding(.bottom, 15)
+                                .scaleEffect(longIntvDec ? 1.2 : 1.0)
+                                .animation(.easeInOut(duration: 0.2), value: longIntvDec)
+                                .onTapGesture {
+                                    longBreakIntv = decrementFormattedNumericString(numericString: longBreakIntv) ?? longBreakIntv
+                                    settingsModel.setLongBreakIntv(intv: Int(longBreakIntv) ?? 2)
+                                    AudioServicesPlaySystemSound(1104)
+                                    longIntvDec = true
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        longIntvDec = false
+                                    }
+                                }
+           
+                        }
+                        
+                        
+                    }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
+                    .background(Color(UIColor(hex: 0xefefef)))
+                    .cornerRadius(8.0)
+                    .padding(.leading, 15)
+                    
+                    Spacer()
+                }
+                .padding(.leading, 10)
+                    
+                
+            
+            }.frame(width: screenSize.width, height: 150, alignment: .leading)
+            
                 
             
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)

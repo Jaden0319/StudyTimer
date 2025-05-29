@@ -13,6 +13,8 @@ import Foundation
         @Published var mode_colors: [Int] = [0xE84D4D, 0x2eaace, 0x11669c]
         @Published private var mode_times: [Float] = [25.0, 5.0, 10.0]
         @Published var backgroundColor: Int = 0xE84D4D
+        @Published var autoStartBreaks = false
+        @Published var autoStartStudy = false
         
         @Published private var mode: Int = 0 {
             didSet {
@@ -57,6 +59,14 @@ import Foundation
             return self.mode == 2
         }
         
+        func autoStartBreaksToggle() -> Void {
+            autoStartBreaks.toggle()
+        }
+        
+        func autoStartStudyToggle() -> Void {
+            autoStartStudy.toggle()
+        }
+        
         func nextMode() {
             
             if(isStudyTime()) {
@@ -76,6 +86,10 @@ import Foundation
             else if(isLongBreak()) {
                 setMode(mode: 0)
             }
+        }
+        
+        func setLongBreakIntv(intv: Int) {
+            longBreakIntv = intv
         }
         
     }
