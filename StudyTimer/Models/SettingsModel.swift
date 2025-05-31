@@ -5,16 +5,18 @@
 //  Created by Jaden Creech on 2/10/25.
 //
 
+
 import Foundation
 
     final class SettingsModel: ObservableObject {
         
-        private final var modes: [String: Int] = ["StudyTime": 0, "ShortBreak": 1, "LongBreak": 2]
+        final var modes: [Int: String] = [0: "StudyTime", 1: "Short Break", 2: "Long Break"]
         @Published var mode_colors: [Int] = [0xE84D4D, 0x2eaace, 0x11669c]
         @Published private var mode_times: [Float] = [25.0, 5.0, 10.0]
         @Published var backgroundColor: Int = 0xE84D4D
         @Published var autoStartBreaks = false
         @Published var autoStartStudy = false
+        private let allColors: [Int] = [0xE84D4D, 0x2eaace, 0x11669c, 0xF4D35E, 0xB388EB, 0xFFA07A, 0x8BC34A, 0xFFB34]
         
         @Published private var mode: Int = 0 {
             didSet {
@@ -90,6 +92,10 @@ import Foundation
         
         func setLongBreakIntv(intv: Int) {
             longBreakIntv = intv
+        }
+        
+        func getColors() -> [Int] {
+            return allColors
         }
         
     }

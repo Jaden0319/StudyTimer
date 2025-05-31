@@ -10,12 +10,14 @@ import AVFoundation
 
 
 
+
+
 struct SettingsView: View {
     
+   
+    
+    
     @State private var settingsModel: SettingsModel = SettingsModel()
-    
-    
-
     @State private var studyMins: String = "25"
     @State private var shortBreakMins: String = "5"
     @State private var longBreakMins: String = "10"
@@ -33,11 +35,6 @@ struct SettingsView: View {
     
     @State private var autoStartBreaks = false
     @State private var autoStartStudy = false
-    
-    
-    
-    
-    
     
     //in future will get from database potentially, or local settings
     
@@ -80,6 +77,7 @@ struct SettingsView: View {
                 
                 Text("Time(minutes)")
                     .padding(.leading, 6)
+                    .bold()
                 
             }.frame(width: screenSize.width, height: 95, alignment: .leading)
                 .background(Color.white)
@@ -184,6 +182,7 @@ struct SettingsView: View {
                                 .scaleEffect(shortInc ? 1.2 : 1.0)
                                 .animation(.easeInOut(duration: 0.2), value: shortInc)
                                 .onTapGesture {
+                                    
                                     shortBreakMins = incrementFormattedNumericString(numericString: shortBreakMins) ?? shortBreakMins
                                     settingsModel.setModeTime(mode: 1, time: Float(shortBreakMins) ?? 5)
                                     AudioServicesPlaySystemSound(1104)
@@ -360,6 +359,7 @@ struct SettingsView: View {
                                 .scaleEffect(longIntvInc ? 1.2 : 1.0)
                                 .animation(.easeInOut(duration: 0.2), value: longIntvInc)
                                 .onTapGesture {
+                                
                                     longBreakIntv = incrementFormattedNumericString(numericString: longBreakIntv) ?? longBreakIntv
                                     settingsModel.setLongBreakIntv(intv: Int(longBreakIntv) ?? 2)
                                     AudioServicesPlaySystemSound(1104)
@@ -406,6 +406,87 @@ struct SettingsView: View {
             
             }.frame(width: screenSize.width, height: 150, alignment: .leading)
             
+            Divider().background(Color.gray) //theme section
+            
+            
+            HStack {
+                
+              
+                Image(systemName: "wand.and.stars")
+                    .resizable()
+                    .frame(width: 45, height: 45)
+                    .foregroundColor(Color.gray)
+                    .padding(.leading, 10)
+                
+                Text("Theme")
+                    .font(.system(size: 20))
+                    .bold()
+                    .font(.title)
+                    .foregroundColor(Color.gray)
+                    
+            }.frame(width: screenSize.width, height: 65, alignment: .leading)
+                
+            
+            HStack {
+                
+                
+                Text("Color Theme")
+                    .font(.system(size: 16))
+                    .bold()
+                    .padding(.leading, 10)
+                
+                Spacer()
+                
+              
+                Button("") { //StudyTime Button
+                    
+                    //action
+                    
+                }
+                .frame(width: 30, height: 30)
+                .background(Color(UIColor(hex: settingsModel.mode_colors[0])))
+                .cornerRadius(8)
+                .padding(.trailing, 5)
+                
+                Button("") { //ShortBreak Button
+                    
+                    //action
+                    
+                }
+
+                .frame(width: 30, height: 30)
+                .background(Color(UIColor(hex: settingsModel.mode_colors[1])))
+                .cornerRadius(8)
+                .padding(.trailing, 5)
+                
+                Button("") { //LongBreak Button
+                    
+                    //action
+                    
+                }
+                .frame(width: 30, height: 30)
+                .background(Color(UIColor(hex: settingsModel.mode_colors[2])))
+                .cornerRadius(8)
+                .padding(.trailing, 10)
+                    
+                    
+                    
+               
+                
+                
+           
+
+                
+                
+                
+                
+                
+                
+            }.frame(width: screenSize.width, alignment: .leading)
+                
+            
+            
+               
                 
             
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)
@@ -439,6 +520,64 @@ func decrementFormattedNumericString(numericString:String, decrement by:Int=1) -
         
     }
     return String(format: "%d", numericValue - by)
+}
+
+
+
+
+struct ColorPickerView: View {
+    
+    
+    var settingsModel: SettingsModel = SettingsModel()
+    var mode: Int
+    @State private var selectedColor: Int = 0
+    
+    init (mode: Int) {
+        self.mode = mode
+        
+        }
+       
+    
+  
+    var body: some View {
+        
+        VStack {
+           
+            Text("Set a color for \(settingsModel.modes[mode] ?? "")")
+                .bold()
+                .font(.system(size: 16))
+            
+            HStack {
+                
+                let colors = settingsModel.getColors()
+                
+                ForEach(0..<colors.count, id: \.self) { i in
+                        Button("") {
+                        }
+                        .frame(width: 30, height: 30)
+                        .background(Color(UIColor(hex: colors[i])))
+                        .cornerRadius(8)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(selectedColor == colors[i] ? Color.black : Color.clear, lineWidth: 1.2))
+                        .onTapGesture {
+                            selectedColor = colors[i]
+                            settingsModel.mode_colors[mode] = selectedColor
+                            print(selectedColor)
+                        }.disabled(selectedColor == colors[i])
+                            
+                        
+                    }
+                
+            }
+            
+            
+            
+        }.frame(width: screenSize.width, height: screenSize.height, alignment: .center)
+            .background(Color.white)
+            .onAppear {
+                    selectedColor = settingsModel.mode_colors[mode]
+                }
+        
+    }
 }
 
 
