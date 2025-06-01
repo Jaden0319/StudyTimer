@@ -19,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EF7444932DECE9D400CB50A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EFBBF0302D600FB800FB3D6E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		EFD72AD22D51994D00BF0B44 /* StudyTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudyTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFD72AD52D51994D00BF0B44 /* StudyTimerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyTimerApp.swift; sourceTree = "<group>"; };
@@ -61,6 +62,7 @@
 		EFD72AD42D51994D00BF0B44 /* StudyTimer */ = {
 			isa = PBXGroup;
 			children = (
+				EF7444932DECE9D400CB50A1 /* Info.plist */,
 				EFD72AE92D51B1A600BF0B44 /* Models */,
 				EFD72AD52D51994D00BF0B44 /* StudyTimerApp.swift */,
 				EFD72AE72D51B06900BF0B44 /* Views */,
@@ -319,6 +321,7 @@
 				DEVELOPMENT_TEAM = 32NCZ2L8GX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StudyTimer/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -348,6 +351,7 @@
 				DEVELOPMENT_TEAM = 32NCZ2L8GX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StudyTimer/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

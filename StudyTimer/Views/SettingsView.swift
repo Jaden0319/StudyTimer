@@ -3,13 +3,7 @@ import Foundation
 import SwiftUI
 import AVFoundation
 
-/*Want to make view scrollable eventually,
-  Add potential save button and / or more theme features*/
-  
-
-
-
-
+/*Want to wrap arrows in buttons*/
 
 struct SettingsView: View {
     
@@ -21,8 +15,10 @@ struct SettingsView: View {
     
     @State private var studyInc = false
     @State private var studyDec = false
+    
     @State private var shortInc = false
     @State private var shortDec = false
+    
     @State private var longInc = false
     @State private var longDec = false
     
@@ -38,484 +34,507 @@ struct SettingsView: View {
     
     //add vars that pass data back in forth between models when settings are updated
     var body: some View {
-        
-        VStack {
-            
+
             VStack {
                 
-                ZStack {
-                 
-                    Text("Settings")
-                        .font(.title)
-                        .bold()
-                        .foregroundColor(.indigo)
-
-                   
-                    HStack {
-                        Image(systemName: "arrowshape.turn.up.backward.fill")
-                            .resizable()
-                            .frame(width: 35, height: 30)
+                VStack {
+                    
+                    ZStack {
+                        
+                        Text("Settings")
+                            .font(.title)
+                            .bold()
+                            .foregroundColor(.indigo)
+                        
+                        
+                        HStack {
+                            Image(systemName: "arrowshape.turn.up.backward.fill")
+                                .resizable()
+                                .frame(width: 35, height: 30)
+                                .foregroundColor(.gray)
+                                .padding(.leading, 16)
+                                .onTapGesture {
+                                    dismiss()
+                                }
+                            Spacer()
+                        }
+                    }
+                    .frame(width: screenSize.width, height: 45)
+                    .padding(.top, 47)
+                    
+                    
+                    Divider().background(Color.black)
+                }.padding(.bottom, 5)
+                
+                ScrollView {
+                    
+                    VStack {
+                        
+                        Label { //Title and Icon
+                            Text("Timer")
+                                .font(.system(size: 20))
+                                .bold()
+                                .font(.title)
+                        } icon: {
+                            Image(systemName: "clock")
+                                .resizable()
+                                .frame(width: 45, height: 45)
+                        }.padding(6)
                             .foregroundColor(.gray)
-                            .padding(.leading, 16)
-                            .onTapGesture {
-                                dismiss()
+                        
+                        Text("Time(minutes)")
+                            .padding(.leading, 6)
+                            .bold()
+                        
+                    }.frame(width: screenSize.width, height: 95, alignment: .leading)
+                        .background(Color.white)
+                        .padding(.bottom, 5)
+                    
+                    HStack {
+                        
+                        VStack {
+                            
+                            Text("StudyTime").bold()
+                                .foregroundColor(Color.gray)
+                                .hoverEffect()
+                            
+                            
+                            HStack { //StudyTimer edit section, Need to work on touch area for setting time without arrows
+                                
+                                TextField("\(studyMins)", text: $studyMins)
+                                //.background(Color.green)
+                                    .frame(width: ((screenSize.width / 3.5) - 54), height: 50, alignment: .center)
+                                    .padding(.leading, 10)
+                                    .scaledToFit()
+                                    .disabled(true)
+                                
+                                VStack {    //Add button controls, possible change of styling
+                                    
+                                    Button(action: {
+                                        studyMins = incrementFormattedNumericString(numericString: studyMins) ?? studyMins
+                                        settingsModel.setModeTime(mode: 0, time: Float(studyMins) ?? 25)
+                                        AudioServicesPlaySystemSound(1104)
+                                        studyInc = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            studyInc = false
+                                        }
+                                    }) {
+                                        Image(systemName: "arrowtriangle.up.fill")
+                                            .scaledToFit()
+                                            .padding(.top, 15)
+                                            .foregroundColor(Color.black)
+                                            .scaleEffect(studyInc ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: studyInc)
+                                            
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Button(action: {
+                                        studyMins = decrementFormattedNumericString(numericString: studyMins) ?? studyMins
+                                        settingsModel.setModeTime(mode: 0, time: Float(studyMins) ?? 25)
+                                        AudioServicesPlaySystemSound(1104)
+                                        studyDec = true
+
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            studyDec = false
+                                        }
+                                    }) {
+                                        Image(systemName: "arrowtriangle.down.fill")
+                                            .scaledToFit()
+                                            .padding(.bottom, 15)
+                                            .scaleEffect(studyDec ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: studyDec)
+                                            .foregroundColor(.black)
+                                    }
+                                }
+                                
+                                
+                            }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
+                                .background(Color(UIColor(hex: 0xefefef)))
+                                .cornerRadius(8.0)
+                                .padding(.leading, 5)
+                            
+                            
+                            
+                            
+                        }.frame(width: screenSize.width / 3.5, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: .top)
+                        //.background(Color.red)
+                        
+                        Spacer()
+                        
+                        VStack {
+                            
+                            Text("Short Break").bold()
+                                .foregroundColor(Color.gray)
+                                .hoverEffect()
+                            
+                            
+                            HStack { //StudyTimer edit section, Need to work on touch area for setting time without arrows
+                                
+                                TextField("\(shortBreakMins)", text: $shortBreakMins)
+                                //.background(Color.green)
+                                    .frame(width: ((screenSize.width / 3.5) - 54), height: 50, alignment: .center)
+                                    .padding(.leading, 10)
+                                    .scaledToFit()
+                                    .disabled(true)
+                                
+                                
+                                
+                                VStack {
+                                    
+                                    Button(action: {
+                                        shortBreakMins = incrementFormattedNumericString(numericString: shortBreakMins) ?? shortBreakMins
+                                        settingsModel.setModeTime(mode: 1, time: Float(shortBreakMins) ?? 5)
+                                        AudioServicesPlaySystemSound(1104)
+                                        shortInc = true
+
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            shortInc = false
+                                        }
+                                    }) {
+                                        Image(systemName: "arrowtriangle.up.fill")
+                                            .scaledToFit()
+                                            .padding(.top, 15)
+                                            .scaleEffect(shortInc ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: shortInc)
+                                            .foregroundColor(Color.black)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    
+                                    
+                                    Button(action: {
+                                        
+                                        shortBreakMins = decrementFormattedNumericString(numericString: shortBreakMins) ?? shortBreakMins
+                                        settingsModel.setModeTime(mode: 1, time: Float(shortBreakMins) ?? 5)
+                                        AudioServicesPlaySystemSound(1104)
+                                        shortDec = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            shortDec = false
+                                        }
+                                    }) {
+                                        
+                                        Image(systemName: "arrowtriangle.down.fill")
+                                            .scaledToFit()
+                                            .padding(.bottom, 15)
+                                            .scaleEffect(shortDec ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: shortDec)
+                                            .foregroundColor(Color.black)
+                                    }
+                                    
+                                    
+                                }
+                                
+                                
+                            }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
+                                .background(Color(UIColor(hex: 0xefefef)))
+                                .cornerRadius(8.0)
+                                .padding(.leading, 5)
+                            
+                            
+                        }.frame(width: screenSize.width / 3.5, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: .top)
+                        
+                        Spacer()
+                        
+                        VStack {
+                            
+                            
+                            Text("Long Break").bold()
+                                .foregroundColor(Color.gray)
+                                .hoverEffect()
+                                .padding(.trailing, 10)
+                            
+                            
+                            
+                            HStack { //StudyTimer edit section, Need to work on touch area for setting time without arrows
+                                
+                                TextField("\(longBreakMins)", text: $longBreakMins)
+                                //.background(Color.green)
+                                    .frame(width: ((screenSize.width / 3.5) - 54), height: 50, alignment: .center)
+                                    .padding(.leading, 10)
+                                    .disabled(true)
+                                
+                                
+                                VStack {
+                                    
+                                    
+                                    Button(action: {
+                                        longBreakMins = incrementFormattedNumericString(numericString: longBreakMins) ?? longBreakMins
+                                        settingsModel.setModeTime(mode: 2, time: Float(longBreakMins) ?? 10)
+                                        AudioServicesPlaySystemSound(1104)
+                                        longInc = true
+                                        
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            longInc = false
+                                        }
+                                        
+                                    }) {
+                                        
+                                        Image(systemName: "arrowtriangle.up.fill")
+                                            .scaledToFit()
+                                            .padding(.top, 15)
+                                            .scaleEffect(longInc ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: longInc)
+                                            .foregroundColor(.black)
+      
+                                    }
+                    
+                                    Spacer()
+                                    
+                                    Button(action: {
+                                        longBreakMins = decrementFormattedNumericString(numericString: longBreakMins) ?? longBreakMins
+                                        settingsModel.setModeTime(mode: 2, time: Float(longBreakMins) ?? 10)
+                                        AudioServicesPlaySystemSound(1104)
+                                        longDec = true
+                                        
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            longDec = false
+                                        }
+                                    }) {
+                                        Image(systemName: "arrowtriangle.down.fill")
+                                            .scaledToFit()
+                                            .padding(.bottom, 15)
+                                            .scaleEffect(longDec ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: longDec)
+                                            .foregroundColor(.black)
+                                    }
+
+                                }
+                                
+                                
+                            }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
+                                .background(Color(UIColor(hex: 0xefefef)))
+                                .cornerRadius(8.0)
+                                .padding(.trailing, 10)
+                            
+                        }.frame(width: screenSize.width / 3.5, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: .top)
+                        
+                    }.frame(width: screenSize.width, height: 95, alignment: .leading)
+                    
+                    
+                    
+                    VStack {
+                        
+                        HStack {
+                            
+                            Text("Auto Start Breaks")
+                                .font(.system(size: 16))
+                                .bold()
+                            
+                            
+                            Toggle("", isOn: $settingsModel.autoStartBreaks)
+                                .onChange(of: settingsModel.autoStartBreaks) { _, _ in
+                                    settingsModel.autoStartBreaksToggle()
+                                }
+                        }.padding([.leading, .trailing], 10)
+                            .tint(Color.blue)
+                        
+                        HStack {
+                            
+                            Text("Auto Start StudyTime")
+                                .font(.system(size: 16))
+                                .bold()
+                            
+                            Toggle("", isOn: $settingsModel.autoStartStudy).onChange(of: settingsModel.autoStartStudy) { _, _ in
+                                settingsModel.autoStartStudyToggle()
                             }
-                        Spacer()
-                    }
-                }
-                .frame(width: screenSize.width, height: 45)
-                .padding(.top, 47)
-                
-                
-                Divider().background(Color.black)
-            }.padding(.bottom, 5)
-            
-            
-            VStack {
-                
-                Label { //Title and Icon
-                    Text("Timer")
-                        .font(.system(size: 20))
-                        .bold()
-                        .font(.title)
-                } icon: {
-                    Image(systemName: "clock")
-                        .resizable()
-                        .frame(width: 45, height: 45)
-                }.padding(6)
-                    .foregroundColor(.gray)
-                
-                Text("Time(minutes)")
-                    .padding(.leading, 6)
-                    .bold()
-                
-            }.frame(width: screenSize.width, height: 95, alignment: .leading)
-                .background(Color.white)
-                .padding(.bottom, 5)
-            
-            HStack {
-                
-                VStack {
-                    
-                    Text("StudyTime").bold()
-                        .foregroundColor(Color.gray)
-                        .hoverEffect()
+                        }.padding([.leading, .trailing], 10)
+                            .tint(Color.blue)
                         
-                    
-                    HStack { //StudyTimer edit section, Need to work on touch area for setting time without arrows
-       
-                        TextField("\(studyMins)", text: $studyMins)
-                            //.background(Color.green)
-                            .frame(width: ((screenSize.width / 3.5) - 54), height: 50, alignment: .center)
-                            .padding(.leading, 10)
-                            .scaledToFit()
-                            .disabled(true)
+                        
+                        HStack {
                             
-                        VStack {    //Add button controls, possible change of styling
+                            Text("Long Break Interval")
+                                .font(.system(size: 16))
+                                .bold()
                             
-                            Image(systemName: "arrowtriangle.up.fill")
-                                .scaledToFit()
-                                .padding(.top, 15)
-                                .scaleEffect(studyInc ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.2), value: studyInc)
-                                .onTapGesture {
-                                    studyMins = incrementFormattedNumericString(numericString: studyMins) ?? studyMins
-                                    settingsModel.setModeTime(mode: 0, time: Float(studyMins) ?? 25)
-                                    AudioServicesPlaySystemSound(1104)
-                                    studyInc = true
-                                    
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        studyInc = false
-                                    }
-                                }
                             
-                        Spacer()
-                            
+                            HStack {
                                 
-                            Image(systemName: "arrowtriangle.down.fill")
-                                .scaledToFit()
-                                .padding(.bottom, 15)
-                                .scaleEffect(studyDec ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.2), value: studyDec)
-                                .onTapGesture {
-                                    studyMins = decrementFormattedNumericString(numericString: studyMins) ?? studyMins
-                                    settingsModel.setModeTime(mode: 0, time: Float(studyMins) ?? 25)
-                                    AudioServicesPlaySystemSound(1104)
-                                    studyDec = true
+                                TextField("\(longBreakIntv)", text: $longBreakIntv)
+                                    .frame(width: ((screenSize.width / 3.5) - 54), height: 30, alignment: .center)
+                                    .padding(.leading, 10)
+                                    .scaledToFit()
+                                    .disabled(true)
+                                
+                                
+                                
+                                VStack {
                                     
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        studyDec = false
-                                    }
-                                }
-                                .foregroundColor(Color.black)
-                            
-                        }
-                        
-                        
-                    }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
-                    .background(Color(UIColor(hex: 0xefefef)))
-                    .cornerRadius(8.0)
-                    .padding(.leading, 5)
-                    
-                    
-                    
-                    
-                }.frame(width: screenSize.width / 3.5, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: .top)
-                    //.background(Color.red)
-                
-                Spacer()
-                
-                VStack {
-                    
-                    Text("Short Break").bold()
-                        .foregroundColor(Color.gray)
-                        .hoverEffect()
-                    
-                    
-                    HStack { //StudyTimer edit section, Need to work on touch area for setting time without arrows
-       
-                        TextField("\(shortBreakMins)", text: $shortBreakMins)
-                            //.background(Color.green)
-                            .frame(width: ((screenSize.width / 3.5) - 54), height: 50, alignment: .center)
-                            .padding(.leading, 10)
-                            .scaledToFit()
-                            .disabled(true)
-                            
-                            
-                        
-                        VStack {
-                            
-                            Image(systemName: "arrowtriangle.up.fill")
-                                .scaledToFit()
-                                .padding(.top, 15)
-                                .scaleEffect(shortInc ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.2), value: shortInc)
-                                .onTapGesture {
-                                    
-                                    shortBreakMins = incrementFormattedNumericString(numericString: shortBreakMins) ?? shortBreakMins
-                                    settingsModel.setModeTime(mode: 1, time: Float(shortBreakMins) ?? 5)
-                                    AudioServicesPlaySystemSound(1104)
-                                    shortInc = true
-                                    
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        shortInc = false
-                                    }
-                                    
-                                }
-                            
-                            Spacer()
-                            
-                            Image(systemName: "arrowtriangle.down.fill")
-                                .scaledToFit()
-                                .padding(.bottom, 15)
-                                .scaleEffect(shortDec ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.2), value: shortDec)
-                                .onTapGesture {
-                                    shortBreakMins = decrementFormattedNumericString(numericString: shortBreakMins) ?? shortBreakMins
-                                    settingsModel.setModeTime(mode: 1, time: Float(shortBreakMins) ?? 5)
-                                    AudioServicesPlaySystemSound(1104)
-                                    shortDec = true
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        shortDec = false
+                                    Button(action: {
+                                        longBreakIntv = incrementFormattedNumericString(numericString: longBreakIntv) ?? longBreakIntv
+                                        settingsModel.setLongBreakIntv(intv: Int(longBreakIntv) ?? 2)
+                                        AudioServicesPlaySystemSound(1104)
+                                        longIntvInc = true
+
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            longIntvInc = false
+                                        }
+                                    }) {
+                                        Image(systemName: "arrowtriangle.up.fill")
+                                            .scaledToFit()
+                                            .padding(.top, 15)
+                                            .scaleEffect(longIntvInc ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: longIntvInc)
+                                            .foregroundColor(.black)
                                     }
                                     
                                     
+                                    Spacer()
                                     
-                                }
-                            
-                            
-                            
-                            
-                        }
-                        
-                        
-                    }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
-                    .background(Color(UIColor(hex: 0xefefef)))
-                    .cornerRadius(8.0)
-                    .padding(.leading, 5)
-                    
-                    
-                }.frame(width: screenSize.width / 3.5, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: .top)
-                
-                Spacer()
-                
-                VStack {
-                    
-                    Text("Long Break").bold()
-                        .foregroundColor(Color.gray)
-                        .hoverEffect()
-                        .padding(.trailing, 10)
-                        
-                    
-                    
-                    HStack { //StudyTimer edit section, Need to work on touch area for setting time without arrows
-       
-                        TextField("\(longBreakMins)", text: $longBreakMins)
-                            //.background(Color.green)
-                            .frame(width: ((screenSize.width / 3.5) - 54), height: 50, alignment: .center)
-                            .padding(.leading, 10)
-                            .disabled(true)
-                            
-       
-                        VStack {
-                            
-                            Image(systemName: "arrowtriangle.up.fill")
-                                .scaledToFit()
-                                .padding(.top, 15)
-                                .scaleEffect(longInc ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.2), value: longInc)
-                                .onTapGesture {
-                                    longBreakMins = incrementFormattedNumericString(numericString: longBreakMins) ?? longBreakMins
-                                    settingsModel.setModeTime(mode: 2, time: Float(longBreakMins) ?? 10)
-                                    AudioServicesPlaySystemSound(1104)
-                                    longInc = true
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        longInc = false
+                                    Button(action: {
+                                        longBreakIntv = decrementFormattedNumericString(numericString: longBreakIntv) ?? longBreakIntv
+                                        settingsModel.setLongBreakIntv(intv: Int(longBreakIntv) ?? 2)
+                                        AudioServicesPlaySystemSound(1104)
+                                        longIntvDec = true
+
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            longIntvDec = false
+                                        }
+                                    }) {
+                                        Image(systemName: "arrowtriangle.down.fill")
+                                            .scaledToFit()
+                                            .padding(.bottom, 15)
+                                            .scaleEffect(longIntvDec ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: longIntvDec)
+                                            .foregroundColor(.black)
                                     }
                                     
-                                }
-                            
-                            Spacer()
-                            
-                            Image(systemName: "arrowtriangle.down.fill")
-                                .scaledToFit()
-                                .padding(.bottom, 15)
-                                .scaleEffect(longDec ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.2), value: longDec)
-                                .onTapGesture {
-                                    longBreakMins = decrementFormattedNumericString(numericString: longBreakMins) ?? longBreakMins
-                                    settingsModel.setModeTime(mode: 2, time: Float(longBreakMins) ?? 10)
-                                    AudioServicesPlaySystemSound(1104)
-                                    longDec = true
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        longDec = false
-                                    }
                                 }
                                 
+                                
+                            }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
+                                .background(Color(UIColor(hex: 0xefefef)))
+                                .cornerRadius(8.0)
+                                .padding(.leading, 15)
                             
-                            
+                            Spacer()
                         }
+                        .padding(.leading, 10)
                         
                         
-                    }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
-                    .background(Color(UIColor(hex: 0xefefef)))
-                    .cornerRadius(8.0)
-                    .padding(.trailing, 10)
-     
-                }.frame(width: screenSize.width / 3.5, height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, alignment: .top)
-                   
-            }.frame(width: screenSize.width, height: 95, alignment: .leading)
-                
-            
-            
-            VStack {
-                
-                HStack {
-      
-                    Text("Auto Start Breaks")
-                        .font(.system(size: 16))
-                        .bold()
                         
+                    }.frame(width: screenSize.width, height: 150, alignment: .leading)
                     
-                    Toggle("", isOn: $settingsModel.autoStartBreaks)
-                        .onChange(of: settingsModel.autoStartBreaks) { _, _ in
-                            settingsModel.autoStartBreaksToggle()
-                        }
-                }.padding([.leading, .trailing], 10)
-                    .tint(Color.blue)
-                
-                HStack {
-      
-                    Text("Auto Start StudyTime")
-                        .font(.system(size: 16))
-                        .bold()
-                    
-                    Toggle("", isOn: $settingsModel.autoStartStudy).onChange(of: settingsModel.autoStartStudy) { _, _ in
-                        settingsModel.autoStartStudyToggle()
-                    }
-                }.padding([.leading, .trailing], 10)
-                    .tint(Color.blue)
-                
-                
-                HStack {
-                    
-                    Text("Long Break Interval")
-                        .font(.system(size: 16))
-                        .bold()
+                    Divider().background(Color.gray) //theme section
                     
                     
                     HStack {
-       
-                        TextField("\(longBreakIntv)", text: $longBreakIntv)
-                            .frame(width: ((screenSize.width / 3.5) - 54), height: 30, alignment: .center)
-                            .padding(.leading, 10)
-                            .scaledToFit()
-                            .disabled(true)
-                            
-                            
                         
-                        VStack {
-                            
-                            Image(systemName: "arrowtriangle.up.fill")
-                                .scaledToFit()
-                                .padding(.top, 15)
-                                .scaleEffect(longIntvInc ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.2), value: longIntvInc)
-                                .onTapGesture {
-                                
-                                    longBreakIntv = incrementFormattedNumericString(numericString: longBreakIntv) ?? longBreakIntv
-                                    settingsModel.setLongBreakIntv(intv: Int(longBreakIntv) ?? 2)
-                                    AudioServicesPlaySystemSound(1104)
-                                    longIntvInc = true
-            
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        longIntvInc = false
-                                    }
-                                    
+                        
+                        Image(systemName: "wand.and.stars")
+                            .resizable()
+                            .frame(width: 45, height: 45)
+                            .foregroundColor(Color.gray)
+                            .padding(.leading, 10)
+                        
+                        Text("Theme")
+                            .font(.system(size: 20))
+                            .bold()
+                            .font(.title)
+                            .foregroundColor(Color.gray)
+                        
+                    }.frame(width: screenSize.width, height: 65, alignment: .leading)
+                    
+                    
+                    HStack {
+                        
+                        
+                        Text("Color Theme")
+                            .font(.system(size: 16))
+                            .bold()
+                            .padding(.leading, 10)
+                        
+                        Spacer()
+                        
+                        
+                        
+                        
+                        
+                        Button(action: {
+                            showColorPickerStudy = true
+                        }) {
+                            Rectangle()
+                                .fill(Color(UIColor(hex: settingsModel.mode_colors[0])))
+                                .frame(width: 30, height: 30)
+                                .cornerRadius(8)
+                        }
+                        .padding(.trailing, 5)
+                        .popover(isPresented: $showColorPickerStudy) {
+                            ColorPickerView(mode: 0)
+                                .onDisappear {
+                                    showColorPickerStudy = false
                                 }
-                            
-                            Spacer()
-                            
-                            Image(systemName: "arrowtriangle.down.fill")
-                                .scaledToFit()
-                                .padding(.bottom, 15)
-                                .scaleEffect(longIntvDec ? 1.2 : 1.0)
-                                .animation(.easeInOut(duration: 0.2), value: longIntvDec)
-                                .onTapGesture {
-                                    longBreakIntv = decrementFormattedNumericString(numericString: longBreakIntv) ?? longBreakIntv
-                                    settingsModel.setLongBreakIntv(intv: Int(longBreakIntv) ?? 2)
-                                    AudioServicesPlaySystemSound(1104)
-                                    longIntvDec = true
-                                    
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        longIntvDec = false
-                                    }
-                                }
-           
                         }
                         
                         
-                    }.frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
-                    .background(Color(UIColor(hex: 0xefefef)))
-                    .cornerRadius(8.0)
-                    .padding(.leading, 15)
+                        Button(action: {
+                            
+                            showColorPickerShort = true
+                            
+                        }) {
+                            Rectangle()
+                                .fill(Color(UIColor(hex: settingsModel.mode_colors[1])))
+                                .frame(width: 30, height: 30)
+                                .cornerRadius(8)
+                        }
+                        .padding(.trailing, 5)
+                        .popover(isPresented: $showColorPickerShort) {
+                            ColorPickerView(mode: 1).onDisappear() {
+                                showColorPickerShort = false
+                            }
+                        }
+                        
+                        Button(action: { //LongBreak Button
+                            showColorPickerLong = true
+                        }) {
+                            Rectangle()
+                                .fill(Color(UIColor(hex: settingsModel.mode_colors[2])))
+                                .frame(width: 30, height: 30)
+                                .cornerRadius(8)
+                        }
+                        .padding(.trailing, 10)
+                        .popover(isPresented: $showColorPickerLong) {
+                            ColorPickerView(mode: 2).onDisappear() {
+                                showColorPickerLong = false
+                            }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)
+                        }
+  
+                    }.frame(width: screenSize.width, alignment: .leading)
+                        .padding(.bottom, 20)
+                                        
+                    HStack {
+                      
+                            Text("Timer Font")
+                                .font(.system(size: 16))
+                                .bold()
+                                .padding(.leading, 10)
+                        
+                        
+                          
+                    }.frame(width: screenSize.width, alignment: .leading)
                     
-                    Spacer()
+                    
+                    
+                    
+                    
+                    
                 }
-                .padding(.leading, 10)
-                    
-                
+            }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)
+                .background(Color.white)
+                .onAppear {
+                    studyMins = String(Int(settingsModel.getModeTime(mode: 0)))
+                    shortBreakMins = String(Int(settingsModel.getModeTime(mode: 1)))
+                    longBreakMins = String(Int(settingsModel.getModeTime(mode: 2)))
+                    longBreakIntv = String(settingsModel.longBreakIntv)
+                }
+        
             
-            }.frame(width: screenSize.width, height: 150, alignment: .leading)
-            
-            Divider().background(Color.gray) //theme section
-            
-            
-            HStack {
-                
-              
-                Image(systemName: "wand.and.stars")
-                    .resizable()
-                    .frame(width: 45, height: 45)
-                    .foregroundColor(Color.gray)
-                    .padding(.leading, 10)
-                
-                Text("Theme")
-                    .font(.system(size: 20))
-                    .bold()
-                    .font(.title)
-                    .foregroundColor(Color.gray)
-                    
-            }.frame(width: screenSize.width, height: 65, alignment: .leading)
-                
-            
-            HStack {
-                
-                
-                Text("Color Theme")
-                    .font(.system(size: 16))
-                    .bold()
-                    .padding(.leading, 10)
-                
-                Spacer()
-                
-              
-                Button("") { //StudyTime Button
-                }
-                .frame(width: 30, height: 30)
-                .background(Color(UIColor(hex: settingsModel.mode_colors[0])))
-                .cornerRadius(8)
-                .padding(.trailing, 5)
-                .onTapGesture {
-                    showColorPickerStudy = true
-                }
-                .popover(isPresented: $showColorPickerStudy) {
-                    ColorPickerView(mode: 0).onDisappear() {
-                        showColorPickerStudy = false
-                    }
-                    
-                    
-                }
-                
-                Button("") { //ShortBreak Button
-                    
-                    //action
-                    
-                }
-
-                .frame(width: 30, height: 30)
-                .background(Color(UIColor(hex: settingsModel.mode_colors[1])))
-                .cornerRadius(8)
-                .padding(.trailing, 5)
-                .onTapGesture {
-                    showColorPickerShort = true
-                }
-                .popover(isPresented: $showColorPickerShort) {
-                    ColorPickerView(mode: 1).onDisappear() {
-                        showColorPickerShort = false
-                    }
-                }
-                Button("") { //LongBreak Button
-                    
-                    //action
-                    
-                }
-                .frame(width: 30, height: 30)
-                .background(Color(UIColor(hex: settingsModel.mode_colors[2])))
-                .cornerRadius(8)
-                .padding(.trailing, 10)
-                .onTapGesture {
-                    showColorPickerLong = true
-                }
-                .popover(isPresented: $showColorPickerLong) {
-                    ColorPickerView(mode: 2).onDisappear() {
-                        showColorPickerLong = false
-                    }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)
-                }
-                    
-                
-                
-                
-            }.frame(width: screenSize.width, alignment: .leading)
-                
-      
-            
-        }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)
-            .background(Color.white)
-            .onAppear {
-                studyMins = String(Int(settingsModel.getModeTime(mode: 0)))
-                shortBreakMins = String(Int(settingsModel.getModeTime(mode: 1)))
-                longBreakMins = String(Int(settingsModel.getModeTime(mode: 2)))
-                longBreakIntv = String(settingsModel.longBreakIntv)
-         
-                
-            }
+          
+        
+        
     }
 }
 
@@ -573,24 +592,20 @@ struct ColorPickerView: View {
                 let colors = settingsModel.getColors()
                 
                 ForEach(0..<colors.count, id: \.self) { i in
-                        Button("") {
+                    Button(action: {
+                        
+                        selectedColor = colors[i]
+                        settingsModel.mode_colors[mode] = selectedColor
+                        dismiss()
+ 
+                    }) {
+                        Rectangle()
+                            .fill(Color(UIColor(hex: colors[i])))
+                            .frame(width: 30, height: 30)
+                            .cornerRadius(8)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(selectedColor == colors[i] ? Color.black : Color.clear, lineWidth: 2))
                         }
-                        .frame(width: 30, height: 30)
-                        .background(Color(UIColor(hex: colors[i])))
-                        .cornerRadius(8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(selectedColor == colors[i] ? Color.black : Color.clear, lineWidth: 1.2))
-                        .onTapGesture {
-                            selectedColor = colors[i]
-                            settingsModel.mode_colors[mode] = selectedColor
-                            
-                            
-                            
-                            
-                            
-                           
-                            print(selectedColor)
-                            dismiss()
-                        }.disabled(selectedColor == colors[i])
+                        .disabled(selectedColor == colors[i])
                             
                         
                     }
@@ -609,4 +624,5 @@ struct ColorPickerView: View {
 
 #Preview {
     SettingsView()
+        .environmentObject(SettingsModel())
 }

@@ -13,16 +13,24 @@ extension BaseView {
         @Published var isActive = false
         @Published var showingAlert = false
         @Published var time: String = "25:00"
+        
         @Published var minutes: Float = 25.0 {
             didSet {
                 self.time = "\(Int(minutes)):00"
             }
         }
         
+       
+     
+        
+      
+        
+    
+        
         private var initialTime = 0
         private var endDate = Date()
         private var remainingTime: TimeInterval = 0
-        
+        var startTime: Float = 0
         
         func setMinutes(mins: Float) {
             self.minutes = mins

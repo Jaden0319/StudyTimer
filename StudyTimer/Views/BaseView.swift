@@ -16,8 +16,9 @@ struct BaseView: View {
     @StateObject private var timerVM = TimerModel()
     @StateObject private var settingsVM = SettingsModel()
     @State private var showingSettings = false
-    
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var lastTime: Float = 0.0
+    
     @State private var startText: String = "Start"
     
     var body: some View {
@@ -62,21 +63,18 @@ struct BaseView: View {
                         .onTapGesture {
                             showingSettings = true
                             timerVM.pause()
+                            lastTime = settingsVM.getModeTime(mode: settingsVM.getMode())
                         }
                         .fullScreenCover(isPresented: $showingSettings) {
                             SettingsView()
                                 .environmentObject(settingsVM)
                                 .onDisappear() {
                                     showingSettings = false
-                                    timerVM.reset()
-                                    
-                                    timerVM.minutes = settingsVM.getModeTime(mode: settingsVM.getMode())
-                                    
-                                    
-                                    
-                                    
-                                    
-                                }
+                                    if(lastTime != settingsVM.getModeTime(mode: settingsVM.getMode())) {
+                                        timerVM.reset()
+                                        timerVM.minutes = settingsVM.getModeTime(mode: settingsVM.getMode())
+                                    }
+                              }
                         }
                     
                     Image(systemName: "person.crop.circle.fill")
@@ -159,10 +157,11 @@ struct BaseView: View {
                         VStack {
                             
                             Text("\(timerVM.time)")
-                                .font(.system(size: 55, weight: .medium, design: .rounded))
+                                .font(Font.custom(settingsVM.timerFont, size: 55))
+                                
                                 .alert("Timer Done!", isPresented: $timerVM.showingAlert) {
                                     
-                                    
+        
                                 }
                                 .padding()
                                 .cornerRadius(20)
@@ -182,10 +181,11 @@ struct BaseView: View {
                                 
                                 timerVM.reset()
                                 AudioServicesPlaySystemSound(1026)
-                                var lastMode = settingsVM.getMode()
+                                let lastMode = settingsVM.getMode()
                                 settingsVM.nextMode()
                                 timerVM.showingAlert = false
                                 timerVM.minutes = settingsVM.getModeTime(mode: settingsVM.getMode())
+                                
                                 
                                 if(settingsVM.autoStartStudy) {
                                     if(lastMode == 1 || lastMode == 2) {
@@ -254,5 +254,5 @@ struct BaseView: View {
 }
 #Preview {
     BaseView()
-        
+       
 }
