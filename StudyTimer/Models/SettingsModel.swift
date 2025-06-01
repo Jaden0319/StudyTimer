@@ -6,17 +6,26 @@
 //
 
 
+
+
 import Foundation
 
     final class SettingsModel: ObservableObject {
         
         final var modes: [Int: String] = [0: "StudyTime", 1: "Short Break", 2: "Long Break"]
-        @Published var mode_colors: [Int] = [0xE84D4D, 0x2eaace, 0x11669c]
+        
         @Published private var mode_times: [Float] = [25.0, 5.0, 10.0]
         @Published var backgroundColor: Int = 0xE84D4D
         @Published var autoStartBreaks = false
         @Published var autoStartStudy = false
         private let allColors: [Int] = [0xE84D4D, 0x2eaace, 0x11669c, 0xF4D35E, 0xB388EB, 0xFFA07A, 0x8BC34A, 0xFFB34]
+        
+        @Published var mode_colors: [Int] = [0xE84D4D, 0x2eaace, 0x11669c] {
+            didSet {
+                backgroundColor = mode_colors[mode]
+            }
+        }
+         
         
         @Published private var mode: Int = 0 {
             didSet {
@@ -26,6 +35,12 @@ import Foundation
         
         @Published var longBreakIntv: Int = 2
         @Published var breakCount: Int = 0
+        
+        
+        
+        func getMode() -> Int {
+            return mode
+        }
         
         func setMode(mode: Int) {
             self.mode = mode

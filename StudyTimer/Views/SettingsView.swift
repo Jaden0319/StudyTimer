@@ -3,9 +3,8 @@ import Foundation
 import SwiftUI
 import AVFoundation
 
-/* Need to add Back button 
-   Need initalizer to pass values from settingsModel
-   Want to make view scrollable eventually, Need to add arrow functionaility for changing time, also should vaerify constraints. Debatng enabily textfield or just using arrows.*/
+/*Want to make view scrollable eventually,
+  Add potential save button and / or more theme features*/
   
 
 
@@ -14,10 +13,7 @@ import AVFoundation
 
 struct SettingsView: View {
     
-   
-    
-    
-    @State private var settingsModel: SettingsModel = SettingsModel()
+    @EnvironmentObject private var settingsModel: SettingsModel
     @State private var studyMins: String = "25"
     @State private var shortBreakMins: String = "5"
     @State private var longBreakMins: String = "10"
@@ -33,9 +29,11 @@ struct SettingsView: View {
     @State private var longIntvInc = false
     @State private var longIntvDec = false
     
-    @State private var autoStartBreaks = false
-    @State private var autoStartStudy = false
+    @State private var showColorPickerStudy = false
+    @State private var showColorPickerShort = false
+    @State private var showColorPickerLong = false
     
+    @Environment(\.dismiss) var dismiss
     //in future will get from database potentially, or local settings
     
     //add vars that pass data back in forth between models when settings are updated
@@ -43,18 +41,30 @@ struct SettingsView: View {
         
         VStack {
             
-            VStack { //title
+            VStack {
                 
-                HStack {
-                    
+                ZStack {
+                 
                     Text("Settings")
                         .font(.title)
                         .bold()
                         .foregroundColor(.indigo)
-                    
-                    
-                }.frame(width: screenSize.width, height: 45, alignment: .center)
-                    .padding(.top, 47)
+
+                   
+                    HStack {
+                        Image(systemName: "arrowshape.turn.up.backward.fill")
+                            .resizable()
+                            .frame(width: 35, height: 30)
+                            .foregroundColor(.gray)
+                            .padding(.leading, 16)
+                            .onTapGesture {
+                                dismiss()
+                            }
+                        Spacer()
+                    }
+                }
+                .frame(width: screenSize.width, height: 45)
+                .padding(.top, 47)
                 
                 
                 Divider().background(Color.black)
@@ -312,10 +322,10 @@ struct SettingsView: View {
                         .bold()
                         
                     
-                    Toggle("", isOn: $autoStartBreaks).onChange(of: autoStartBreaks) { _, _ in
-                        autoStartBreaks.toggle()
-                        settingsModel.autoStartBreaksToggle()
-                    }
+                    Toggle("", isOn: $settingsModel.autoStartBreaks)
+                        .onChange(of: settingsModel.autoStartBreaks) { _, _ in
+                            settingsModel.autoStartBreaksToggle()
+                        }
                 }.padding([.leading, .trailing], 10)
                     .tint(Color.blue)
                 
@@ -325,13 +335,11 @@ struct SettingsView: View {
                         .font(.system(size: 16))
                         .bold()
                     
-                    Toggle("", isOn: $autoStartStudy).onChange(of: autoStartStudy) { _, _ in
-                        autoStartStudy.toggle()
+                    Toggle("", isOn: $settingsModel.autoStartStudy).onChange(of: settingsModel.autoStartStudy) { _, _ in
                         settingsModel.autoStartStudyToggle()
                     }
                 }.padding([.leading, .trailing], 10)
                     .tint(Color.blue)
-                
                 
                 
                 HStack {
@@ -439,14 +447,21 @@ struct SettingsView: View {
                 
               
                 Button("") { //StudyTime Button
-                    
-                    //action
-                    
                 }
                 .frame(width: 30, height: 30)
                 .background(Color(UIColor(hex: settingsModel.mode_colors[0])))
                 .cornerRadius(8)
                 .padding(.trailing, 5)
+                .onTapGesture {
+                    showColorPickerStudy = true
+                }
+                .popover(isPresented: $showColorPickerStudy) {
+                    ColorPickerView(mode: 0).onDisappear() {
+                        showColorPickerStudy = false
+                    }
+                    
+                    
+                }
                 
                 Button("") { //ShortBreak Button
                     
@@ -458,7 +473,14 @@ struct SettingsView: View {
                 .background(Color(UIColor(hex: settingsModel.mode_colors[1])))
                 .cornerRadius(8)
                 .padding(.trailing, 5)
-                
+                .onTapGesture {
+                    showColorPickerShort = true
+                }
+                .popover(isPresented: $showColorPickerShort) {
+                    ColorPickerView(mode: 1).onDisappear() {
+                        showColorPickerShort = false
+                    }
+                }
                 Button("") { //LongBreak Button
                     
                     //action
@@ -468,33 +490,34 @@ struct SettingsView: View {
                 .background(Color(UIColor(hex: settingsModel.mode_colors[2])))
                 .cornerRadius(8)
                 .padding(.trailing, 10)
+                .onTapGesture {
+                    showColorPickerLong = true
+                }
+                .popover(isPresented: $showColorPickerLong) {
+                    ColorPickerView(mode: 2).onDisappear() {
+                        showColorPickerLong = false
+                    }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)
+                }
                     
-                    
-                    
-               
-                
-                
-           
-
-                
-                
-                
                 
                 
                 
             }.frame(width: screenSize.width, alignment: .leading)
                 
-            
-            
-               
-                
+      
             
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)
             .background(Color.white)
+            .onAppear {
+                studyMins = String(Int(settingsModel.getModeTime(mode: 0)))
+                shortBreakMins = String(Int(settingsModel.getModeTime(mode: 1)))
+                longBreakMins = String(Int(settingsModel.getModeTime(mode: 2)))
+                longBreakIntv = String(settingsModel.longBreakIntv)
+         
+                
+            }
     }
 }
-
-
 
 
 func incrementFormattedNumericString(numericString:String, increment by:Int=1) -> String? {
@@ -523,12 +546,10 @@ func decrementFormattedNumericString(numericString:String, decrement by:Int=1) -
 }
 
 
-
-
 struct ColorPickerView: View {
     
-    
-    var settingsModel: SettingsModel = SettingsModel()
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject private var settingsModel: SettingsModel
     var mode: Int
     @State private var selectedColor: Int = 0
     
@@ -561,7 +582,14 @@ struct ColorPickerView: View {
                         .onTapGesture {
                             selectedColor = colors[i]
                             settingsModel.mode_colors[mode] = selectedColor
+                            
+                            
+                            
+                            
+                            
+                           
                             print(selectedColor)
+                            dismiss()
                         }.disabled(selectedColor == colors[i])
                             
                         
@@ -570,13 +598,11 @@ struct ColorPickerView: View {
             }
             
             
-            
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .center)
             .background(Color.white)
             .onAppear {
                     selectedColor = settingsModel.mode_colors[mode]
                 }
-        
     }
 }
 
