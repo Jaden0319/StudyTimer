@@ -32,9 +32,9 @@ struct BaseView: View {
                     
                     Label { //Title and Icon
                         Text("StudyTimer")
-                            .font(.system(size: 24))
+                            .font(Font.custom("Avenir-Medium", size: 30))
                             .bold()
-                            .font(.title)
+                        
                     } icon: {
                         Image(systemName: "graduationcap")
                             .resizable()
@@ -157,8 +157,10 @@ struct BaseView: View {
                         VStack {
                             
                             Text("\(timerVM.time)")
-                                .font(Font.custom(settingsVM.timerFont, size: 55))
+                            
                                 
+                                .font(Font.custom(settingsVM.fonts[settingsVM.timerFont] ?? "Avenir-Medium", size: 55).bold())
+                        
                                 .alert("Timer Done!", isPresented: $timerVM.showingAlert) {
                                     
         
@@ -231,7 +233,7 @@ struct BaseView: View {
                             .background(Color.white)
                             .foregroundColor(Color(UIColor(hex: settingsVM.backgroundColor)))
                             .bold()
-                            .frame(width: 300, height: 300, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                            .frame(width: 300, height: 300, alignment: .center)
                             .shadow(radius: 5)
                         
                         

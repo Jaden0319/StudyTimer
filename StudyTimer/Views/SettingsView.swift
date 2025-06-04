@@ -29,6 +29,7 @@ struct SettingsView: View {
     @State private var showColorPickerShort = false
     @State private var showColorPickerLong = false
     
+    
     @Environment(\.dismiss) var dismiss
     //in future will get from database potentially, or local settings
     
@@ -450,9 +451,6 @@ struct SettingsView: View {
                         Spacer()
                         
                         
-                        
-                        
-                        
                         Button(action: {
                             showColorPickerStudy = true
                         }) {
@@ -509,18 +507,50 @@ struct SettingsView: View {
                       
                             Text("Timer Font")
                                 .font(.system(size: 16))
+                                .padding(.leading, 11)
                                 .bold()
-                                .padding(.leading, 10)
+                                
                         
+                            Spacer()
                         
+                        Menu {
+                            Picker(selection: $settingsModel.timerFont, label: EmptyView()) {
+                                ForEach(Array(settingsModel.fonts.keys), id: \.self) { key in
+                                    Text(key)
+                                        .foregroundColor(.black)
+                                        .bold()
+                                        .tag(key)
+                                }
+                            }
+                        } label: {
+                            
+                            HStack {
+                                Text("\(settingsModel.timerFont)")
+                                    .foregroundColor(.black)
+                                    .font(Font.custom(settingsModel.fonts[settingsModel.timerFont] ?? "Avenir-Medium", size: 16))
+                                    .padding(10)
+                                    
+                                    
+                                Image(systemName: "chevron.up.chevron.down")
+                                    
+                                    .foregroundColor(.black)
+                                    .padding(.trailing, 5)
+                                
+                            }
+                            .background(Color(UIColor(hex: 0xefefef)))
+                                .cornerRadius(8)
+                                .padding(.trailing, 10)
+                                
+                                
+                        }
                           
-                    }.frame(width: screenSize.width, alignment: .leading)
+                    }.frame(width: screenSize.width, height: 60, alignment: .leading)
+                        
                     
+                    Divider().background(Color.gray)
+                        .padding(.top, 20)
                     
-                    
-                    
-                    
-                    
+                                        
                 }
             }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)
                 .background(Color.white)

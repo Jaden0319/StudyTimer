@@ -13,11 +13,15 @@ import Foundation
     final class SettingsModel: ObservableObject {
         
         final var modes: [Int: String] = [0: "StudyTime", 1: "Short Break", 2: "Long Break"]
-        //standard -> robot -> cartoon -> fancy
-        final var timerFonts: [String: String] = ["Defualt": "ArialRoundedMTBold", "AmericanTypewriter-Bold": "", "Cartoon": "ChalkboardSE-Bold", "Fancy": "SnellRoundhand-Bold"]
         
-        @Published var timerFont: String = "ArialRoundedMTBold"
-        
+        final var fonts: [String: String] = [
+                "Default": "Avenir-Medium",
+                "Fancy": "Snell Roundhand",
+                "Cartoon": "Chalkboard SE",
+                "Robot": "Menlo"
+            ]
+      
+        @Published var timerFont: String = "Default"
         @Published private var mode_times: [Float] = [25.0, 5.0, 10.0]
         @Published var backgroundColor: Int = 0xE84D4D
         @Published var autoStartBreaks = false
