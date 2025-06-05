@@ -9,8 +9,9 @@
 
 
 import Foundation
+import AVFoundation
 
-    final class SettingsModel: ObservableObject {
+final class SettingsModel: ObservableObject {
         
         final var modes: [Int: String] = [0: "StudyTime", 1: "Short Break", 2: "Long Break"]
         
@@ -20,7 +21,14 @@ import Foundation
                 "Cartoon": "Chalkboard SE",
                 "Robot": "Menlo"
             ]
-      
+        
+    
+    final var sounds: [String: String] = ["Defualt": "defualt_alarm", "Rainbow": "rainbow_alarm", "Digital": "digital_alarm", "Orchestra": "orchestral_alarm"]
+    
+       
+        @Published var alarmSound: String = "Defualt"
+        @Published var tickingOn: Bool = false
+        
         @Published var timerFont: String = "Default"
         @Published private var mode_times: [Float] = [25.0, 5.0, 10.0]
         @Published var backgroundColor: Int = 0xE84D4D
@@ -121,4 +129,48 @@ import Foundation
             return allColors
         }
         
+    }
+    
+    class SoundManager {
+        
+        static let shared = SoundManager()
+        private var soundEffectPlayer: AVAudioPlayer?
+        private var backgroundMusicPlayer: AVAudioPlayer?
+        
+        
+        
+        func playImportedSound(named soundName: String) {
+            if let url = Bundle.main.url(forResource: soundName, withExtension: ".mp3") {
+                do {
+                    soundEffectPlayer = try AVAudioPlayer(contentsOf: url)
+                    soundEffectPlayer?.play()
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
+                        self.soundEffectPlayer?.stop()
+                     }
+                    
+                } catch {
+                    print("err playing sound")
+                }
+            }else {
+                print( "sound file not found \(soundName)")
+            }
+        }
+        
+        func toggleBackgroundTicking(isOn: Bool) {
+            if isOn {
+                if let url = Bundle.main.url(forResource: "ticking_clock", withExtension: ".mp3") {
+                    do {
+                        backgroundMusicPlayer = try AVAudioPlayer(contentsOf: url)
+                        backgroundMusicPlayer?.numberOfLoops = -1 // inf times
+                        backgroundMusicPlayer?.volume = 0.5
+                        backgroundMusicPlayer?.play()
+                    } catch {
+                        print("Error Playing BGM")
+                    }
+                } else {
+                    backgroundMusicPlayer?.stop()
+                }
+            }
+        }
     }

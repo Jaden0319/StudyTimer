@@ -541,15 +541,101 @@ struct SettingsView: View {
                                 .cornerRadius(8)
                                 .padding(.trailing, 10)
                                 
-                                
                         }
                           
                     }.frame(width: screenSize.width, height: 60, alignment: .leading)
                         
                     
                     Divider().background(Color.gray)
-                        .padding(.top, 20)
+                        .padding(.top, 10)
                     
+                    
+                    HStack {
+                        
+                        Image(systemName: "speaker.wave.1")
+                            .resizable()
+                            .frame(width: 45, height: 45)
+                            .foregroundColor(Color.gray)
+                            .padding(.leading, 10)
+                        
+                        Text("Sound")
+                            .font(.system(size: 20))
+                            .bold()
+                            .font(.title)
+                            .foregroundColor(Color.gray)
+
+                        
+                    }.frame(width: screenSize.width, height: 60, alignment: .leading)
+                        //.background(Color.yellow)
+                    
+                    
+                    
+                    
+                    HStack {
+                        
+                        
+                        Text("Alarm Sound")
+                            .padding(.leading, 8)
+                            .font(.system(size: 16))
+                            .bold()
+                        
+                        Spacer()
+                        
+                        Menu {
+                            Picker(selection: $settingsModel.alarmSound, label: EmptyView()) {
+                                ForEach(Array(settingsModel.sounds.keys), id: \.self) { key in
+                                    Text(key)
+                                        .foregroundColor(.black)
+                                        .bold()
+                                        .tag(key)
+                                }
+                            }
+                        } label: {
+                            
+                            HStack {
+                                Text("\(settingsModel.alarmSound)")
+                                    .foregroundColor(.black)
+                                    .font(Font.custom("Avenir-Medium", size: 16))
+                                    .padding(.leading, 5)
+                                    .padding(10)
+                                    
+                                    
+                                Image(systemName: "chevron.up.chevron.down")
+                                    
+                                    .foregroundColor(.black)
+                                    .padding(.trailing, 5)
+                                
+                            }
+                            .background(Color(UIColor(hex: 0xefefef)))
+                                .cornerRadius(8)
+                                .padding(.trailing, 10)
+                                
+                                
+                        }
+     
+                        
+                    }.frame(width: screenSize.width, height: 60, alignment: .leading)
+                    
+                    
+                    HStack {
+                        
+                        
+                        
+                        Text("Ticking Sound")
+                            .font(.system(size: 16))
+                            .bold()
+                            .padding(.leading, 10)
+                        
+                        
+                        Toggle("", isOn: $settingsModel.tickingOn)
+                            .padding(.trailing, 8)
+                        
+                        
+                    }
+                    .frame(width: screenSize.width, height: 60, alignment: .leading)
+    
+                        .tint(Color.blue)
+                        
                                         
                 }
             }.frame(width: screenSize.width, height: screenSize.height, alignment: .topLeading)

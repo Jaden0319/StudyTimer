@@ -21,6 +21,8 @@ struct BaseView: View {
     
     @State private var startText: String = "Start"
     
+    @State private var backgroundTicking: Bool = false
+    
     var body: some View {
         
         ZStack {
@@ -172,8 +174,12 @@ struct BaseView: View {
                             
                             
                             
+                            
                         }.onReceive(timer) { _ in
                             timerVM.updateCountdown()
+                            
+                            
+                            
                             
                             if(!timerVM.isActive) {
                                 startText = "Start"
@@ -182,7 +188,7 @@ struct BaseView: View {
                             if(!timerVM.isActive && timerVM.showingAlert) {
                                 
                                 timerVM.reset()
-                                AudioServicesPlaySystemSound(1026)
+                                SoundManager.shared.playImportedSound(named: settingsVM.sounds[settingsVM.alarmSound] ?? "defualt_alarm")
                                 let lastMode = settingsVM.getMode()
                                 settingsVM.nextMode()
                                 timerVM.showingAlert = false
@@ -202,9 +208,7 @@ struct BaseView: View {
                                         startText = "Pause"
                                     }
                                 }
-                                
-                                
-                                
+
                                 
                             }
                             
@@ -213,18 +217,24 @@ struct BaseView: View {
                     }.frame(width: screenSize.width - 80, height: 110, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                         .padding(5)
                     //Clock Section
+                    
                     VStack {  //Start Button
                         
                         Button("\(startText)") {
                             
+                            
                             if(!timerVM.isActive) {
+                                   
                                 timerVM.start(minutes: timerVM.minutes)
                                 startText = "Pause"
+                                
                             }
                             else {
                                 timerVM.pause()
                                 startText = "Start"
+                                
                             }
+                            
                             
                             AudioServicesPlaySystemSound(1104)
                             
