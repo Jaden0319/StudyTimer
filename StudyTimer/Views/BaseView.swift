@@ -5,28 +5,18 @@
 //  Created by Jaden Creech on 2/3/25.
 //  View of main screen 
 
-
 import SwiftUI
 import SwiftData
-import AVFoundation
+
 var screenSize:CGSize = UIScreen.main.bounds.size
 
 struct BaseView: View {
     
-    @StateObject private var timerVM = TimerModel()
-    @StateObject private var settingsVM = SettingsModel()
-    @State private var showingSettings = false
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    @State private var lastTime: Float = 0.0
-    
-    @State private var startText: String = "Start"
-    
-    @State private var backgroundTicking: Bool = false
+    @StateObject private var baseVM = BaseViewModel()
     
     var body: some View {
         
         ZStack {
-            
             
             VStack { //Screen
                 
@@ -34,7 +24,7 @@ struct BaseView: View {
                     
                     Label { //Title and Icon
                         Text("StudyTimer")
-                            .font(Font.custom("Avenir-Medium", size: 30))
+                            .font(Font.custom("Avenir-Medium", size: 23))
                             .bold()
                         
                     } icon: {
@@ -63,19 +53,13 @@ struct BaseView: View {
                         .foregroundColor(.white)
                         .padding(10)
                         .onTapGesture {
-                            showingSettings = true
-                            timerVM.pause()
-                            lastTime = settingsVM.getModeTime(mode: settingsVM.getMode())
+                            baseVM.openSettingsAndPauseTimer()
                         }
-                        .fullScreenCover(isPresented: $showingSettings) {
+                        .fullScreenCover(isPresented: $baseVM.showingSettings) {
                             SettingsView()
-                                .environmentObject(settingsVM)
-                                .onDisappear() {
-                                    showingSettings = false
-                                    if(lastTime != settingsVM.getModeTime(mode: settingsVM.getMode())) {
-                                        timerVM.reset()
-                                        timerVM.minutes = settingsVM.getModeTime(mode: settingsVM.getMode())
-                                    }
+                                .environmentObject(baseVM.settingsModel)
+                                .onDisappear() { //done
+                                    baseVM.exitSettings()
                               }
                         }
                     
@@ -106,49 +90,39 @@ struct BaseView: View {
                     HStack { //Top Button Controls
                         
                         Button("StudyTime") {
-                            
-                            settingsVM.setMode(mode: 0) //0: StudyTime 1: Short 2: long
-                            timerVM.reset()
-                            timerVM.minutes = settingsVM.getModeTime(mode: 0)
+                            //done
+                            baseVM.modeClick(mode: 0)
                             //Add Button Action
                         }.font(.system(size: 16))
                             .bold()
                             .font(.largeTitle)
-                            .foregroundColor(settingsVM.isStudyTime() ? .black : .white)
+                            .foregroundColor(baseVM.settingsModel.isStudyTime() ? .black : .white)
                             .padding(2)
-                            .disabled(settingsVM.isStudyTime())
+                            .disabled(baseVM.settingsModel.isStudyTime())
                         
                         Spacer()
                         
                         Button("Short Break") {
-                            
-                            settingsVM.setMode(mode: 1)
-                            //Save time before reset for leaderboard in future if in StudyTime
-                            timerVM.reset()
-                            timerVM.minutes = settingsVM.getModeTime(mode: 1)
-                            
+                            //done
+                            baseVM.modeClick(mode: 1)
                         }.font(.system(size: 16))
                             .bold()
                             .font(.largeTitle)
-                            .foregroundColor(settingsVM.isShortBreak() ? .black : .white)
+                            .foregroundColor(baseVM.settingsModel.isShortBreak() ? .black : .white)
                             .padding(2)
-                            .disabled(settingsVM.isShortBreak())
+                            .disabled(baseVM.settingsModel.isShortBreak())
                         
                         Spacer()
                         
                         Button("Long Break") {
-                            
-                            settingsVM.setMode(mode: 2)
-                            //Save time before reset for leaderboard in future if in StudyTime
-                            timerVM.reset()
-                            timerVM.minutes = settingsVM.getModeTime(mode: 2)
-                            
+                            //done
+                            baseVM.modeClick(mode: 2)
                         }.font(.system(size: 16))
                             .bold()
                             .font(.largeTitle)
-                            .foregroundColor(settingsVM.isLongBreak() ? .black : .white)
+                            .foregroundColor(baseVM.settingsModel.isLongBreak() ? .black : .white)
                             .padding(2)
-                            .disabled(settingsVM.isLongBreak())
+                            .disabled(baseVM.settingsModel.isLongBreak())
                         
                         
                     }.frame(width: screenSize.width - 70, height: 50, alignment: .leading)
@@ -158,60 +132,18 @@ struct BaseView: View {
                         
                         VStack {
                             
-                            Text("\(timerVM.time)")
-                            
-                                
-                                .font(Font.custom(settingsVM.fonts[settingsVM.timerFont] ?? "Avenir-Medium", size: 55).bold())
-                        
-                                .alert("Timer Done!", isPresented: $timerVM.showingAlert) {
-                                    
-        
+                            Text("\(baseVM.time)")
+                                .font(Font.custom(Settings.fonts[baseVM.settingsModel.settings.timerFont] ?? "Avenir-Medium", size: 55).bold())
+                                .alert("Timer Done!", isPresented: $baseVM.timerShowingAlert) {
+            
                                 }
                                 .padding()
                                 .cornerRadius(20)
                                 .frame(width: screenSize.width - 80, height: 90)
                                 .foregroundColor(.white)
                             
-                            
-                            
-                            
-                        }.onReceive(timer) { _ in
-                            timerVM.updateCountdown()
-                            
-                            
-                            
-                            
-                            if(!timerVM.isActive) {
-                                startText = "Start"
-                            }
-                            
-                            if(!timerVM.isActive && timerVM.showingAlert) {
-                                
-                                timerVM.reset()
-                                SoundManager.shared.playImportedSound(named: settingsVM.sounds[settingsVM.alarmSound] ?? "defualt_alarm")
-                                let lastMode = settingsVM.getMode()
-                                settingsVM.nextMode()
-                                timerVM.showingAlert = false
-                                timerVM.minutes = settingsVM.getModeTime(mode: settingsVM.getMode())
-                                
-                                
-                                if(settingsVM.autoStartStudy) {
-                                    if(lastMode == 1 || lastMode == 2) {
-                                        timerVM.start(minutes: timerVM.minutes)
-                                        startText = "Pause"
-                                    }
-                                }
-                                
-                                if(settingsVM.autoStartBreaks) {
-                                    if(lastMode == 0) {
-                                        timerVM.start(minutes: timerVM.minutes)
-                                        startText = "Pause"
-                                    }
-                                }
-
-                                
-                            }
-                            
+                        }.onReceive(baseVM.timer) { _ in
+                            baseVM.handleTimerUpdate()
                         }
                         
                     }.frame(width: screenSize.width - 80, height: 110, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
@@ -220,46 +152,28 @@ struct BaseView: View {
                     
                     VStack {  //Start Button
                         
-                        Button("\(startText)") {
-                            
-                            
-                            if(!timerVM.isActive) {
-                                   
-                                timerVM.start(minutes: timerVM.minutes)
-                                startText = "Pause"
-                                
-                            }
-                            else {
-                                timerVM.pause()
-                                startText = "Start"
-                                
-                            }
-                            
-                            
-                            AudioServicesPlaySystemSound(1104)
-                            
+                        Button("\(baseVM.startText)") { //done
+                            baseVM.startButtonClick()
                         }.buttonStyle(.bordered)
                             .buttonBorderShape(.roundedRectangle(radius: 1))
                             .background(Color.white)
-                            .foregroundColor(Color(UIColor(hex: settingsVM.backgroundColor)))
+                            .foregroundColor(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
                             .bold()
                             .frame(width: 300, height: 300, alignment: .center)
                             .shadow(radius: 5)
-                        
-                        
                         
                     }.frame(width: screenSize.width - 150, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                         .padding() //Start Button
                     
                     
                 }.frame(width: screenSize.width - 50, height: (screenSize.height / 3), alignment: .top)
-                    .background(Color(UIColor(hex: settingsVM.backgroundColor)))
+                    .background(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
                     .cornerRadius(18)
                     .padding(20) //Timer Section
                     .brightness(0.14)
                 
             }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
-                .background(Color(UIColor(hex: settingsVM.backgroundColor)))
+                .background(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
                 .ignoresSafeArea() //Screen
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
     }

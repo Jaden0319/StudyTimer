@@ -5,11 +5,49 @@
 //  Created by Jaden Creech on 2/10/25.
 //
 
-
-
-
 import Foundation
-import AVFoundation
+
+struct Settings: Identifiable, Codable {
+    var id = UUID()
+    
+       static let modes: [Int: String] = [
+           0: "StudyTime",
+           1: "Short Break",
+           2: "Long Break"
+       ]
+       
+       static let fonts: [String: String] = [
+           "Default": "Avenir-Medium",
+           "Fancy": "Snell Roundhand",
+           "Cartoon": "Chalkboard SE",
+           "Robot": "Menlo"
+       ]
+       
+       static let sounds: [String: String] = [
+           "Default": "default_alarm",
+           "Rainbow": "rainbow_alarm",
+           "Digital": "digital_alarm",
+           "Orchestra": "orchestral_alarm"
+       ]
+       
+       static let allColors: [Int] = [
+           0xE84D4D, 0x2EAACE, 0x11669C,
+           0xF4D35E, 0xB388EB, 0xFFA07A,
+           0x8BC34A, 0x0FFB34
+       ]
+       // MARK: - User settings
+       var alarmSound: String = "Default"
+       var tickingOn: Bool = false
+       var timerFont: String = "Default"
+       var modeTimes: [Float] = [25.0, 5.0, 10.0]
+       var backgroundColor: Int = 0xE84D4D
+       var modeColors: [Int] = [0xE84D4D, 0x2EAACE, 0x11669C]
+       var currentMode: Int = 0
+       var longBreakIntv: Int = 2
+       var breakCount: Int = 0
+       var autoStartBreaks: Bool = false
+       var autoStartStudy: Bool = false
+}
 
 final class SettingsModel: ObservableObject {
         
@@ -38,14 +76,14 @@ final class SettingsModel: ObservableObject {
         
         @Published var mode_colors: [Int] = [0xE84D4D, 0x2eaace, 0x11669c] {
             didSet {
-                backgroundColor = mode_colors[mode]
+                backgroundColor = mode_colors[mode] //accounted for
             }
         }
          
         
         @Published private var mode: Int = 0 {
             didSet {
-                backgroundColor = mode_colors[mode]
+                backgroundColor = mode_colors[mode] //must add base view functionality
             }
         }
         
@@ -131,46 +169,4 @@ final class SettingsModel: ObservableObject {
         
     }
     
-    class SoundManager {
-        
-        static let shared = SoundManager()
-        private var soundEffectPlayer: AVAudioPlayer?
-        private var backgroundMusicPlayer: AVAudioPlayer?
-        
-        
-        
-        func playImportedSound(named soundName: String) {
-            if let url = Bundle.main.url(forResource: soundName, withExtension: ".mp3") {
-                do {
-                    soundEffectPlayer = try AVAudioPlayer(contentsOf: url)
-                    soundEffectPlayer?.play()
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
-                        self.soundEffectPlayer?.stop()
-                     }
-                    
-                } catch {
-                    print("err playing sound")
-                }
-            }else {
-                print( "sound file not found \(soundName)")
-            }
-        }
-        
-        func toggleBackgroundTicking(isOn: Bool) {
-            if isOn {
-                if let url = Bundle.main.url(forResource: "ticking_clock", withExtension: ".mp3") {
-                    do {
-                        backgroundMusicPlayer = try AVAudioPlayer(contentsOf: url)
-                        backgroundMusicPlayer?.numberOfLoops = -1 // inf times
-                        backgroundMusicPlayer?.volume = 0.5
-                        backgroundMusicPlayer?.play()
-                    } catch {
-                        print("Error Playing BGM")
-                    }
-                } else {
-                    backgroundMusicPlayer?.stop()
-                }
-            }
-        }
-    }
+   
