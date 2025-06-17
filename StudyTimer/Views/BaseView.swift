@@ -144,7 +144,7 @@ struct BaseView: View {
                             
                         }.onReceive(baseVM.timer) { _ in
                             baseVM.handleTimerUpdate()
-                        }
+                        }  
                         
                     }.frame(width: screenSize.width - 80, height: 110, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                         .padding(5)
@@ -165,7 +165,6 @@ struct BaseView: View {
                     }.frame(width: screenSize.width - 150, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                         .padding() //Start Button
                     
-                    
                 }.frame(width: screenSize.width - 50, height: (screenSize.height / 3), alignment: .top)
                     .background(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
                     .cornerRadius(18)
@@ -176,9 +175,9 @@ struct BaseView: View {
                 .background(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
                 .ignoresSafeArea() //Screen
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
+        
     }
 }
 #Preview {
     BaseView()
-       
 }

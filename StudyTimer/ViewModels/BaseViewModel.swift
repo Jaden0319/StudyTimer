@@ -50,6 +50,7 @@ class BaseViewModel: ObservableObject {
         
         self.timerIsActive = true
         self.remainingTime = 0
+        SoundManager.shared.toggleBackgroundTicking(isOn: settingsModel.settings.tickingOn)
         
     }
     
@@ -59,6 +60,9 @@ class BaseViewModel: ObservableObject {
         let now = Date()
         remainingTime = endDate.timeIntervalSince(now)
         timerIsActive = false
+        if(settingsModel.settings.tickingOn) {
+            SoundManager.shared.toggleBackgroundTicking(isOn: false)
+        }
     }
     
     func reset() {
@@ -117,7 +121,8 @@ class BaseViewModel: ObservableObject {
     func handleTimerUpdate() {
         
         updateCountdown()
-
+        
+        
         if(!timerIsActive) {
             startText = "Start"
         }
@@ -130,8 +135,7 @@ class BaseViewModel: ObservableObject {
             settingsModel.nextMode()
             timerShowingAlert = false
             minutes = settingsModel.getModeTime(mode: settingsModel.settings.currentMode)
-            
-            
+    
             if(settingsModel.settings.autoStartStudy) {
                 if(lastMode == 1 || lastMode == 2) {
                     start(minutes: minutes)
@@ -150,7 +154,6 @@ class BaseViewModel: ObservableObject {
         }
         
     }
-    
     func startButtonClick() {
         if(!timerIsActive) {
             start(minutes: minutes)

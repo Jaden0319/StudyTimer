@@ -22,7 +22,7 @@ struct SettingsView: View {
                     Text("Settings")
                         .font(.title)
                         .bold()
-                        .foregroundColor(.indigo)
+                        .foregroundColor(Color(UIColor(hex: 0x504444)))
                     
                     
                     HStack {
@@ -34,6 +34,8 @@ struct SettingsView: View {
                             .onTapGesture {
                                 dismiss()
                             }
+                            
+                            
                         Spacer()
                     }
                 }

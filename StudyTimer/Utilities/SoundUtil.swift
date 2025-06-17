@@ -42,9 +42,9 @@ class SoundManager {
                 } catch {
                     print("Error Playing BGM")
                 }
-            } else {
-                backgroundMusicPlayer?.stop()
             }
+        } else {
+            backgroundMusicPlayer?.stop()
         }
     }
 }
