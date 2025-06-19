@@ -7,6 +7,8 @@
 
 import Foundation
 import AVFoundation
+import Firebase
+import FirebaseAuth
 
 class BaseViewModel: ObservableObject {
     
@@ -26,12 +28,13 @@ class BaseViewModel: ObservableObject {
     var startTime: Float = 0
     var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
-    
     @Published var settingsModel: SettingsViewModel = SettingsViewModel()
     @Published var showingSettings = false
     
-    @Published var startText: String = "Start"
+    @Published var showingProfile = false
+    @Published var user: User = .default
     
+    @Published var startText: String = "Start"
     
     func setMinutes(mins: Float) {
         self.minutes = mins
@@ -103,8 +106,51 @@ class BaseViewModel: ObservableObject {
         lastTime = settingsModel.getModeTime(mode: settingsModel.settings.currentMode)
     }
     
-    func exitSettings() {
+    func exitSettings(completion: @escaping () -> Void) {
         showingSettings = false
+
+        let currentTime = settingsModel.getModeTime(mode: settingsModel.settings.currentMode)
+
+        if lastTime != currentTime {
+            reset()
+            minutes = currentTime
+        }
+
+        if let userID = user.id, settingsModel.settings != user.settings {
+            saveSettingsToFirestore(userID: userID, settings: settingsModel.settings) {
+                self.user.settings = self.settingsModel.settings
+                completion()
+            }
+        } else {
+            completion() // No changes or invalid user ID
+        }
+    }
+    
+    private func saveSettingsToFirestore(userID: String, settings: Settings, completion: @escaping () -> Void) {
+        let db = Firestore.firestore()
+        do {
+            try db.collection("users").document(userID).setData(from: ["settings": settings], merge: true) { error in
+                if let error = error {
+                    print("Error saving settings: \(error.localizedDescription)")
+                } else {
+                    print("Settings updated for user: \(userID)")
+                }
+                completion()
+            }
+        } catch {
+            print("Encoding error: \(error.localizedDescription)")
+            completion()
+        }
+    }
+    
+    func openProfileAndPauseTimer() {
+        showingProfile = true
+        pause()
+        lastTime = settingsModel.getModeTime(mode: settingsModel.settings.currentMode)
+    }
+    
+    func exitProfile() {
+        showingProfile = false
         if(lastTime != settingsModel.getModeTime(mode: settingsModel.settings.currentMode)) {
             reset()
             minutes = settingsModel.getModeTime(mode: settingsModel.settings.currentMode)
@@ -149,10 +195,7 @@ class BaseViewModel: ObservableObject {
                     startText = "Pause"
                 }
             }
-
-            
         }
-        
     }
     func startButtonClick() {
         if(!timerIsActive) {

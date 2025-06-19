@@ -11,6 +11,10 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     //in future will get from database potentially, or local settings
     //add vars that pass data back in forth between models when settings are updated
+    
+    /*Want to add save button eventually, also edit back buttan choose new design/color for the settings title*/
+    
+    
     var body: some View {
         
         VStack {
@@ -19,7 +23,7 @@ struct SettingsView: View {
                 
                 ZStack {
                     
-                    Text("Settings")
+                    Text("Setting")
                         .font(.title)
                         .bold()
                         .foregroundColor(Color(UIColor(hex: 0x504444)))

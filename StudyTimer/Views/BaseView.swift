@@ -6,7 +6,6 @@
 //  View of main screen 
 
 import SwiftUI
-import SwiftData
 
 var screenSize:CGSize = UIScreen.main.bounds.size
 
@@ -34,6 +33,7 @@ struct BaseView: View {
                         
                     }.padding(10)
                         .foregroundColor(.white)
+                       
                     //Title and Icon
                     
                     Spacer()
@@ -59,7 +59,9 @@ struct BaseView: View {
                             SettingsView()
                                 .environmentObject(baseVM.settingsModel)
                                 .onDisappear() { //done
-                                    baseVM.exitSettings()
+                                    baseVM.exitSettings() {
+                                        //completion
+                                    }
                               }
                         }
                     
@@ -69,9 +71,16 @@ struct BaseView: View {
                         .foregroundColor(.white)
                         .padding(.trailing, 10)
                         .onTapGesture {
-                            //Add Tap Gesture Code
+                            baseVM.openProfileAndPauseTimer()
                         }
-                    
+                        .fullScreenCover(isPresented: $baseVM.showingProfile) {
+                            LoginView()
+                                .environmentObject(baseVM)
+                                .onDisappear() { //done
+                                    baseVM.exitProfile()
+                                    print("\(baseVM.user.email)'s signed in")
+                              }
+                        }
                     
                 }.frame(width: screenSize.width, height: 70, alignment: .topLeading)
                     .padding(.top, 60)
@@ -124,7 +133,6 @@ struct BaseView: View {
                             .padding(2)
                             .disabled(baseVM.settingsModel.isLongBreak())
                         
-                        
                     }.frame(width: screenSize.width - 70, height: 50, alignment: .leading)
                     //Top Button Controls
                     
@@ -151,7 +159,6 @@ struct BaseView: View {
                     //Clock Section
                     
                     VStack {  //Start Button
-                        
                         Button("\(baseVM.startText)") { //done
                             baseVM.startButtonClick()
                         }.buttonStyle(.bordered)
@@ -175,7 +182,6 @@ struct BaseView: View {
                 .background(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
                 .ignoresSafeArea() //Screen
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
-        
     }
 }
 #Preview {

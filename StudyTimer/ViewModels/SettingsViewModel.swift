@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 
+
 class SettingsViewModel: ObservableObject {
     @Published  var settings: Settings = Settings()
     @Published  var studyMins: String = "25"
@@ -26,7 +27,11 @@ class SettingsViewModel: ObservableObject {
     @Published  var showColorPickerShort = false
     @Published  var showColorPickerLong = false
     @Published  var selectedColor: Int = 0
-
+    
+    func updateSettings(newSettings: Settings) {
+            self.settings = newSettings
+    }
+    
     func getMode() -> Int {
         return settings.currentMode
     }
