@@ -6,36 +6,59 @@ import FirebaseAuth
 class CreateAccountViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
+    @Published var nickname: String = ""
     @Published var showingAlert = false
     @Published var alertMessage: String = ""
-    
+    //need to add code to check for empty nickname
     func registerNewUser(completion: @escaping (Bool) -> Void) {
-           Auth.auth().createUser(withEmail: email, password: password) { result, error in
-               if let error = error {
-                   self.alertMessage = "Auth error: \(error.localizedDescription)"
-                   self.showingAlert = true
-                   completion(false)
-                   return
-               }
+        let db = Firestore.firestore()
 
-               guard let uid = result?.user.uid else {
-                   self.alertMessage = "Could not get user ID."
-                   self.showingAlert = true
-                   completion(false)
-                   return
-               }
+                Auth.auth().createUser(withEmail: self.email, password: self.password) { result, error in
+                    if let error = error {
+                        self.alertMessage = "Auth error: \(error.localizedDescription)"
+                        self.showingAlert = true
+                        completion(false)
+                        return
+                    }
 
-               let defaultSettings = Settings()
-               let newUser = User(id: uid, email: self.email, settings: defaultSettings)
+                    guard let uid = result?.user.uid else {
+                        self.alertMessage = "Could not get user ID."
+                        self.showingAlert = true
+                        completion(false)
+                        return
+                    }
 
-               do {
-                   try Firestore.firestore().collection("users").document(uid).setData(from: newUser)
-                   completion(true)
-               } catch {
-                   self.alertMessage = "Firestore error: \(error.localizedDescription)"
-                   self.showingAlert = true
-                   completion(false)
-               }
-           }
-       }
-}
+                    let defaultSettings = Settings()
+                    let newUser = User(id: uid, email: self.email, nickname: self.nickname, settings: defaultSettings)
+
+                    do {
+                        try db.collection("users").document(uid).setData(from: newUser)
+
+                        // Create initial weekly usage record
+                        let calendar = Calendar.current
+                        let now = Date()
+                        let week = calendar.component(.weekOfYear, from: now)
+                        let year = calendar.component(.yearForWeekOfYear, from: now)
+
+                        let usageData: [String: Any] = [
+                            "userId": uid,
+                            "nickname": self.nickname,
+                            "weekOfYear": week,
+                            "year": year,
+                            "totalSeconds": 0
+                        ]
+
+                        db.collection("users")
+                            .document(uid)
+                            .collection("weeklyUsage")
+                            .addDocument(data: usageData)
+
+                        completion(true)
+                    } catch {
+                        self.alertMessage = "Firestore error: \(error.localizedDescription)"
+                        self.showingAlert = true
+                        completion(false)
+                    }
+                }
+            }
+    }

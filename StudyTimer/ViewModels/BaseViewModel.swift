@@ -28,6 +28,9 @@ class BaseViewModel: ObservableObject {
     var startTime: Float = 0
     var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
+    var sessionStartTime: Date?
+    var accumulatedSessionSeconds: Int = 0
+    
     @Published var settingsModel: SettingsViewModel = SettingsViewModel()
     @Published var showingSettings = false
     
@@ -35,6 +38,8 @@ class BaseViewModel: ObservableObject {
     @Published var user: User = .default
     
     @Published var startText: String = "Start"
+    
+    @Published var showingStats = false
     
     func setMinutes(mins: Float) {
         self.minutes = mins
@@ -53,16 +58,23 @@ class BaseViewModel: ObservableObject {
         
         self.timerIsActive = true
         self.remainingTime = 0
+        self.sessionStartTime = Date()
         SoundManager.shared.toggleBackgroundTicking(isOn: settingsModel.settings.tickingOn)
         
     }
-    
     func pause() {
         
         guard timerIsActive else { return }
         let now = Date()
         remainingTime = endDate.timeIntervalSince(now)
         timerIsActive = false
+        
+        if let startTime = sessionStartTime, let userID = user.id {
+              let sessionDuration = Int(Date().timeIntervalSince(startTime))
+              accumulatedSessionSeconds += sessionDuration
+              logTimerUsage(seconds: sessionDuration)
+          }
+         
         if(settingsModel.settings.tickingOn) {
             SoundManager.shared.toggleBackgroundTicking(isOn: false)
         }
@@ -87,6 +99,13 @@ class BaseViewModel: ObservableObject {
             self.timerShowingAlert = true
             self.reset()
             //Where to add notifs
+            
+            if let startTime = sessionStartTime, let userID = user.id {
+               let sessionDuration = Int(Date().timeIntervalSince(startTime))
+               accumulatedSessionSeconds += sessionDuration
+               logTimerUsage(seconds: sessionDuration)
+            }
+            
             return
         }
         
@@ -126,6 +145,10 @@ class BaseViewModel: ObservableObject {
         }
     }
     
+    func exitStats() {
+        showingStats = false
+    }
+    
     private func saveSettingsToFirestore(userID: String, settings: Settings, completion: @escaping () -> Void) {
         let db = Firestore.firestore()
         do {
@@ -145,6 +168,12 @@ class BaseViewModel: ObservableObject {
     
     func openProfileAndPauseTimer() {
         showingProfile = true
+        pause()
+        lastTime = settingsModel.getModeTime(mode: settingsModel.settings.currentMode)
+    }
+    
+    func openStatsAndPauseTimer() {
+        showingStats = true
         pause()
         lastTime = settingsModel.getModeTime(mode: settingsModel.settings.currentMode)
     }
@@ -208,6 +237,43 @@ class BaseViewModel: ObservableObject {
         }
         
         AudioServicesPlaySystemSound(1104)
+    }
+    
+    func logTimerUsage(seconds: Int) {
+        guard let userId = user.id else { return }
+
+        let db = Firestore.firestore()
+        let now = Date()
+        let calendar = Calendar.current
+        let week = calendar.component(.weekOfYear, from: now)
+        let year = calendar.component(.yearForWeekOfYear, from: now)
+
+        let usageRef = db
+            .collection("users")
+            .document(userId)
+            .collection("weeklyUsage")
+            .whereField("weekOfYear", isEqualTo: week)
+            .whereField("year", isEqualTo: year)
+
+        usageRef.getDocuments { snapshot, error in
+            if let document = snapshot?.documents.first {
+                let currentSeconds = document.data()["totalSeconds"] as? Int ?? 0
+                document.reference.updateData([
+                    "totalSeconds": currentSeconds + seconds
+                ])
+            } else {
+                db.collection("users")
+                  .document(userId)
+                  .collection("weeklyUsage")
+                  .addDocument(data: [
+                      "userId": userId,
+                      "nickname": self.user.nickname,
+                      "weekOfYear": week,
+                      "year": year,
+                      "totalSeconds": seconds
+                  ])
+            }
+        }
     }
 }
     

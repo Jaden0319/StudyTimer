@@ -8,8 +8,6 @@
 import Foundation
 
 struct Settings: Codable, Equatable {
-    var id = UUID()
-    
     static let modes: [Int: String] = [
         0: "StudyTime",
         1: "Short Break",

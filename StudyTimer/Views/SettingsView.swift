@@ -14,7 +14,6 @@ struct SettingsView: View {
     
     /*Want to add save button eventually, also edit back buttan choose new design/color for the settings title*/
     
-    
     var body: some View {
         
         VStack {
@@ -30,16 +29,15 @@ struct SettingsView: View {
                     
                     
                     HStack {
-                        Image(systemName: "arrowshape.turn.up.backward.fill")
-                            .resizable()
-                            .frame(width: 35, height: 30)
-                            .foregroundColor(.gray)
-                            .padding(.leading, 16)
-                            .onTapGesture {
-                                dismiss()
-                            }
-                            
-                            
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .foregroundColor(.black)
+                            Text("Back")
+                                .foregroundColor(.black)
+                        }
+                        .padding(.leading)
                         Spacer()
                     }
                 }
@@ -267,7 +265,6 @@ struct SettingsView: View {
                             
                             Toggle("", isOn: $settingsModel.settings.autoStartBreaks)
                                 .onChange(of: settingsModel.settings.autoStartBreaks) { _, _ in
-                                    settingsModel.autoStartBreaksToggle()
                                 }
                         }.padding([.leading, .trailing], 10)
                             .tint(Color.blue)
@@ -279,7 +276,6 @@ struct SettingsView: View {
                                 .bold()
                             
                             Toggle("", isOn: $settingsModel.settings.autoStartStudy).onChange(of: settingsModel.settings.autoStartStudy) { _, _ in
-                                settingsModel.autoStartStudyToggle()
                             }
                         }.padding([.leading, .trailing], 10)
                             .tint(Color.blue)

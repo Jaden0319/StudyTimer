@@ -12,7 +12,7 @@ import FirebaseAuth
 struct CreateAccountView: View {
     @StateObject private var createAccountModel = CreateAccountViewModel()
     @Environment(\.dismiss) var dismiss
-
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             VStack {
@@ -30,6 +30,15 @@ struct CreateAccountView: View {
                         .foregroundColor(.black)
                     
                     TextField("Email", text: $createAccountModel.email)
+                        .padding()
+                        .background(Color(UIColor(hex: 0xefefef)))
+                        .cornerRadius(8)
+                        .autocapitalization(.none)
+                        .keyboardType(.emailAddress)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                    
+                    TextField("Nickname", text: $createAccountModel.nickname)
                         .padding()
                         .background(Color(UIColor(hex: 0xefefef)))
                         .cornerRadius(8)

@@ -70,14 +70,7 @@ class SettingsViewModel: ObservableObject {
         return settings.currentMode == 2
     }
     
-    func autoStartBreaksToggle() -> Void {
-        settings.autoStartBreaks.toggle()
-    }
-    
-    func autoStartStudyToggle() -> Void {
-        settings.autoStartStudy.toggle()
-    }
-    
+  
     func nextMode() {
         
         if(isStudyTime()) {

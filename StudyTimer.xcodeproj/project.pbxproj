@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF2EB2BC2E05EB980094BC9D /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB2BB2E05EB980094BC9D /* StatsView.swift */; };
+		EF2EB2BE2E05EDAB0094BC9D /* WeeklyUsageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB2BD2E05EDAB0094BC9D /* WeeklyUsageModel.swift */; };
+		EF2EB2C02E05F39E0094BC9D /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB2BF2E05F39E0094BC9D /* LeaderboardView.swift */; };
 		EFBBF0312D600FB800FB3D6E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBBF0302D600FB800FB3D6E /* SettingsView.swift */; };
 		EFBF55CB2DFF964400D43767 /* SoundUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBF55CA2DFF964400D43767 /* SoundUtil.swift */; };
 		EFBF55E22E0102B500D43767 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBF55E12E0102B500D43767 /* LoginView.swift */; };
@@ -26,6 +29,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EF2EB2BB2E05EB980094BC9D /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		EF2EB2BD2E05EDAB0094BC9D /* WeeklyUsageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyUsageModel.swift; sourceTree = "<group>"; };
+		EF2EB2BF2E05F39E0094BC9D /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		EF7444932DECE9D400CB50A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EFBBF0302D600FB800FB3D6E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		EFBF55CA2DFF964400D43767 /* SoundUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundUtil.swift; sourceTree = "<group>"; };
@@ -111,6 +117,8 @@
 				EFBBF0302D600FB800FB3D6E /* SettingsView.swift */,
 				EFBF55E12E0102B500D43767 /* LoginView.swift */,
 				EFF394612E038BBC00E494CB /* CreateAccountView.swift */,
+				EF2EB2BB2E05EB980094BC9D /* StatsView.swift */,
+				EF2EB2BF2E05F39E0094BC9D /* LeaderboardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -129,6 +137,7 @@
 			children = (
 				EFD72AF22D5A99F700BF0B44 /* SettingsModel.swift */,
 				EFF3945F2E03788000E494CB /* UserModel.swift */,
+				EF2EB2BD2E05EDAB0094BC9D /* WeeklyUsageModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -215,9 +224,12 @@
 				EFD72AF32D5A99F700BF0B44 /* SettingsModel.swift in Sources */,
 				EFBF55E22E0102B500D43767 /* LoginView.swift in Sources */,
 				EFF394622E038BBC00E494CB /* CreateAccountView.swift in Sources */,
+				EF2EB2C02E05F39E0094BC9D /* LeaderboardView.swift in Sources */,
+				EF2EB2BE2E05EDAB0094BC9D /* WeeklyUsageModel.swift in Sources */,
 				EFD72AE62D51A1E500BF0B44 /* ColorUtil.swift in Sources */,
 				EFD72AD82D51994D00BF0B44 /* BaseView.swift in Sources */,
 				EFD72ADA2D51994D00BF0B44 /* Item.swift in Sources */,
+				EF2EB2BC2E05EB980094BC9D /* StatsView.swift in Sources */,
 				EFD72AD62D51994D00BF0B44 /* StudyTimerApp.swift in Sources */,
 				EFBF55CB2DFF964400D43767 /* SoundUtil.swift in Sources */,
 				EFF394602E03788000E494CB /* UserModel.swift in Sources */,

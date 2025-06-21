@@ -30,7 +30,6 @@ struct LoginView: View {
                     .foregroundColor(.white)
                     .padding()
                 
-                    
                 VStack(spacing: 20) {
                     
                     Text("Log In")

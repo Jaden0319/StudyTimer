@@ -16,7 +16,6 @@ struct BaseView: View {
     var body: some View {
         
         ZStack {
-            
             VStack { //Screen
                 
                 HStack { //Top navigation
@@ -43,9 +42,14 @@ struct BaseView: View {
                         .frame(width: 30, height: 30)
                         .foregroundColor(.white)
                         .onTapGesture {
-                            //Add tap gesture code
+                            baseVM.openStatsAndPauseTimer()
                         } //ReportButton
-                    
+                        .fullScreenCover(isPresented: $baseVM.showingStats) {
+                            LeaderboardView()
+                                
+                        }.onDisappear(){
+                            baseVM.exitStats()
+                        }
                     
                     Image(systemName: "gearshape.fill")
                         .resizable()
@@ -102,7 +106,7 @@ struct BaseView: View {
                             //done
                             baseVM.modeClick(mode: 0)
                             //Add Button Action
-                        }.font(.system(size: 16))
+                        }.font(Font.custom("Avenir-Medium", size: 16))
                             .bold()
                             .font(.largeTitle)
                             .foregroundColor(baseVM.settingsModel.isStudyTime() ? .black : .white)
@@ -112,21 +116,22 @@ struct BaseView: View {
                         Spacer()
                         
                         Button("Short Break") {
-                            //done
+                            //done\
                             baseVM.modeClick(mode: 1)
-                        }.font(.system(size: 16))
+                        }.font(Font.custom("Avenir-Medium", size: 16))
                             .bold()
                             .font(.largeTitle)
                             .foregroundColor(baseVM.settingsModel.isShortBreak() ? .black : .white)
                             .padding(2)
                             .disabled(baseVM.settingsModel.isShortBreak())
+                            
                         
                         Spacer()
                         
                         Button("Long Break") {
                             //done
                             baseVM.modeClick(mode: 2)
-                        }.font(.system(size: 16))
+                        }.font(Font.custom("Avenir-Medium", size: 16))
                             .bold()
                             .font(.largeTitle)
                             .foregroundColor(baseVM.settingsModel.isLongBreak() ? .black : .white)
