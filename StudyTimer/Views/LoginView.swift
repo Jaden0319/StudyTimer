@@ -54,6 +54,7 @@ struct LoginView: View {
                     
                     Button(action: {
                         loginModel.loginUser(baseModel: baseVM) {
+                            
                             dismiss()
                         }
                     }) {

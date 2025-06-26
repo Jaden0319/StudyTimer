@@ -41,6 +41,17 @@ class BaseViewModel: ObservableObject {
     
     @Published var showingStats = false
     
+    @Published var weeklyUsage: [DailyUsage] = []
+    
+    @Published var activitySummary: ActivitySummary = ActivitySummary(
+        id: nil,
+        userId: "",
+        totalSeconds: 0,
+        lastDayActive: Date(),
+        dayStreak: 0,
+        daysAccessed: 0
+    )
+    
     func setMinutes(mins: Float) {
         self.minutes = mins
     }
@@ -69,10 +80,12 @@ class BaseViewModel: ObservableObject {
         remainingTime = endDate.timeIntervalSince(now)
         timerIsActive = false
         
-        if let startTime = sessionStartTime, let userID = user.id {
+        if let startTime = sessionStartTime, let _ = user.id {
               let sessionDuration = Int(Date().timeIntervalSince(startTime))
               accumulatedSessionSeconds += sessionDuration
               logTimerUsage(seconds: sessionDuration)
+              logTotalSecondsToActivitySummary(seconds: sessionDuration)
+              logDailyUsage(seconds: sessionDuration)
           }
          
         if(settingsModel.settings.tickingOn) {
@@ -100,12 +113,13 @@ class BaseViewModel: ObservableObject {
             self.reset()
             //Where to add notifs
             
-            if let startTime = sessionStartTime, let userID = user.id {
+            if let startTime = sessionStartTime, let _ = user.id {
                let sessionDuration = Int(Date().timeIntervalSince(startTime))
                accumulatedSessionSeconds += sessionDuration
                logTimerUsage(seconds: sessionDuration)
+               logTotalSecondsToActivitySummary(seconds: sessionDuration)
+               logDailyUsage(seconds: sessionDuration)
             }
-            
             return
         }
         
@@ -149,6 +163,7 @@ class BaseViewModel: ObservableObject {
         showingStats = false
     }
     
+    
     private func saveSettingsToFirestore(userID: String, settings: Settings, completion: @escaping () -> Void) {
         let db = Firestore.firestore()
         do {
@@ -175,7 +190,7 @@ class BaseViewModel: ObservableObject {
     func openStatsAndPauseTimer() {
         showingStats = true
         pause()
-        lastTime = settingsModel.getModeTime(mode: settingsModel.settings.currentMode)
+        lastTime = settingsModel.getModeTime(mode: settingsModel.settings.currentMode)//if online
     }
     
     func exitProfile() {
@@ -261,17 +276,151 @@ class BaseViewModel: ObservableObject {
                 document.reference.updateData([
                     "totalSeconds": currentSeconds + seconds
                 ])
+            }
+        }
+    }
+    
+    func logTotalSecondsToActivitySummary(seconds: Int) {
+        guard let userId = user.id else { return }
+
+        let db = Firestore.firestore()
+        let summaryRef = db
+            .collection("users")
+            .document(userId)
+            .collection("activitySummary")
+            .document("summary")
+
+        summaryRef.getDocument { document, error in
+            if let document = document, document.exists {
+                let currentSeconds = document.data()?["totalSeconds"] as? Double ?? 0.0
+                summaryRef.updateData([
+                    "totalSeconds": currentSeconds + Double(seconds),
+                ])
+            }
+        }
+    }
+    
+    func updateDaysData() {
+        guard let userId = user.id else { return }
+
+        let db = Firestore.firestore()
+        let summaryRef = db
+            .collection("users")
+            .document(userId)
+            .collection("activitySummary")
+            .document("summary")
+
+        summaryRef.getDocument { document, error in
+            guard let document = document, document.exists,
+                  let data = document.data(),
+                  let lastTimestamp = data["lastDayActive"] as? Timestamp,
+                  let currentStreak = data["dayStreak"] as? Int,
+                  let currentDaysAccessed = data["daysAccessed"] as? Int else {
+                print("Missing or invalid activity summary data.")
+                return
+            }
+
+            let calendar = Calendar.current
+            let today = calendar.startOfDay(for: Date())
+            let lastDate = calendar.startOfDay(for: lastTimestamp.dateValue())
+            let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
+
+            // No update needed if already logged today
+            guard lastDate != today else { return }
+
+            var newStreak = 1
+            if lastDate == yesterday {
+                newStreak = currentStreak + 1
+            }
+
+            let updates: [String: Any] = [
+                "lastDayActive": Timestamp(date: today),
+                "dayStreak": newStreak,
+                "daysAccessed": currentDaysAccessed + 1
+            ]
+
+            summaryRef.updateData(updates) { err in
+                if let err = err {
+                    print("Error updating activity summary: \(err)")
+                } else {
+                    print("Updated activity summary for user: \(userId)")
+                }
+            }
+        }
+    }
+    
+    func logDailyUsage(seconds: Int) {
+        guard let userId = user.id else { return }
+        let db = Firestore.firestore()
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date()) 
+
+        let usageRef = db
+            .collection("users")
+            .document(userId)
+            .collection("dailyUsage")
+            .whereField("date", isEqualTo: Timestamp(date: today))
+
+        usageRef.getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching daily usage: \(error)")
+                return
+            }
+
+            if let document = snapshot?.documents.first {
+                // Update existing document
+                let currentSeconds = document.data()["totalSeconds"] as? Double ?? 0.0
+                document.reference.updateData([
+                    "totalSeconds": currentSeconds + Double(seconds)
+                ])
             } else {
+                // Create new document
+                let newEntry: [String: Any] = [
+                    "userId": userId,
+                    "totalSeconds": Double(seconds),
+                    "date": Timestamp(date: today)
+                ]
+
                 db.collection("users")
                   .document(userId)
-                  .collection("weeklyUsage")
-                  .addDocument(data: [
-                      "userId": userId,
-                      "nickname": self.user.nickname,
-                      "weekOfYear": week,
-                      "year": year,
-                      "totalSeconds": seconds
-                  ])
+                  .collection("dailyUsage")
+                  .addDocument(data: newEntry)
+            }
+        }
+    }
+    
+    func dailyUsage() {
+        guard let userId = user.id else { return }
+        
+        let db = Firestore.firestore()
+        let today = Calendar.current.startOfDay(for: Date())
+
+        let usageRef = db
+            .collection("users")
+            .document(userId)
+            .collection("dailyUsage")
+            .whereField("date", isEqualTo: Timestamp(date: today))
+
+        usageRef.getDocuments { snapshot, error in
+            if let error = error {
+                print("Error checking daily usage: \(error.localizedDescription)")
+                return
+            }
+
+            if snapshot?.documents.isEmpty == true {
+                let newEntry: [String: Any] = [
+                    "userId": userId,
+                    "totalSeconds": 0.0,
+                    "date": Timestamp(date: today)
+                ]
+                db.collection("users")
+                  .document(userId)
+                  .collection("dailyUsage")
+                  .addDocument(data: newEntry) { error in
+                      if let error = error {
+                          print("Error creating daily usage: \(error.localizedDescription)")
+                      }
+                  }
             }
         }
     }

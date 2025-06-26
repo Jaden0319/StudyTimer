@@ -41,20 +41,15 @@ class LeaderboardViewModel: ObservableObject {
 
                 DispatchQueue.main.async {
                     self.entries = usageEntries
+                    
                 }
             }
     }
-    
     func formatTimeHHMM(seconds: Int) -> String {
         let hours = seconds / 3600
-    
-        if hours == 0 {
-            let secs = seconds % 60
-            return String(format: "%02d:%02d", 0, secs)
-        } else {
-    
-            let minutes = (seconds % 3600) / 60
-            return String(format: "%02d:%02d", hours, minutes)
-        }
+        let minutes = (seconds % 3600) / 60
+        return String(format: "%d:%02d", hours, minutes)
     }
+    
+    
 }

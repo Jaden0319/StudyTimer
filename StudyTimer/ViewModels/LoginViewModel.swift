@@ -42,6 +42,9 @@ class LoginViewModel: ObservableObject {
                     baseModel.user = self.currentUser
                     baseModel.settingsModel.settings = self.currentUser.settings
                     self.isLoggedIn = true
+                    
+                    baseModel.updateDaysData()
+                    baseModel.dailyUsage()
                     onSuccess()
                 } else {
                     self.alertMessage = "Could not find user."
@@ -50,4 +53,6 @@ class LoginViewModel: ObservableObject {
             }
         }
     }
+    
+    
 }

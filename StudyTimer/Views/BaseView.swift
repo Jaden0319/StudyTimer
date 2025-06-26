@@ -43,9 +43,11 @@ struct BaseView: View {
                         .foregroundColor(.white)
                         .onTapGesture {
                             baseVM.openStatsAndPauseTimer()
+                            
                         } //ReportButton
                         .fullScreenCover(isPresented: $baseVM.showingStats) {
-                            LeaderboardView()
+                            StatsView()
+                                .environmentObject(baseVM)
                                 
                         }.onDisappear(){
                             baseVM.exitStats()
@@ -72,12 +74,14 @@ struct BaseView: View {
                     Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .frame(width: 30, height: 30)
-                        .foregroundColor(.white)
+                    .foregroundColor(baseVM.user.id == nil ? .white : .black)
                         .padding(.trailing, 10)
                         .onTapGesture {
                             baseVM.openProfileAndPauseTimer()
                         }
                         .fullScreenCover(isPresented: $baseVM.showingProfile) {
+                            
+                            
                             LoginView()
                                 .environmentObject(baseVM)
                                 .onDisappear() { //done
@@ -188,7 +192,10 @@ struct BaseView: View {
                 .ignoresSafeArea() //Screen
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
     }
+    
 }
+
+
 #Preview {
     BaseView()
 }

@@ -14,7 +14,7 @@ struct LeaderboardView: View {
         VStack(spacing: 0) {
             
             // Back button
-            HStack {
+            /*HStack {
                 Button(action: {
                     dismiss()
                 }) {
@@ -26,12 +26,13 @@ struct LeaderboardView: View {
                 .padding(.leading)
                 Spacer()
             }
-            .padding(.top, 8)
+            .padding(.top, 8)*/
  
 
             // Subtitle
             Text("Focus Time This Week")
-                .font(.system(size: 18, weight: .bold))
+                .font(Font.custom("Avenir-Medium", size: 16))
+                .bold()
                 .padding(.top, 12)
                 .padding(.bottom, 4)
 
@@ -61,6 +62,7 @@ struct LeaderboardView: View {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     ForEach(Array(viewModel.entries.enumerated()), id: \.1.id) { index, entry in
                         
+                       
                         
                         HStack {
                             Text("\(index + 1)")
@@ -78,6 +80,8 @@ struct LeaderboardView: View {
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(.gray)
                                 .frame(width: 80, alignment: .trailing)
+                            
+                            
                             
                             
                         }
