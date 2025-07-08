@@ -8,15 +8,10 @@
 import Foundation
 import SwiftUI
 
-enum SummaryTab: String, CaseIterable {
-    case summary = "Summary"
-    case ranking = "Ranking"
-}
-
 struct StatsView: View {
     @EnvironmentObject var baseVM: BaseViewModel
     @Environment(\.dismiss) var dismiss
-    @State private var selectedTab: SummaryTab = .summary
+    @StateObject private var statsVM: StatsViewModel = StatsViewModel()
 
     var body: some View {
         VStack(spacing: 12) {
@@ -50,16 +45,16 @@ struct StatsView: View {
 
             // Tab Selector
             HStack(spacing: 0) {
-                ForEach(SummaryTab.allCases, id: \.self) { tab in
+                ForEach(StatsViewModel.SummaryTab.allCases, id: \.self) { tab in
                     Button(action: {
-                        selectedTab = tab
+                        statsVM.selectedTab =  tab
                     }) {
                         Text(tab.rawValue)
                             .font(.system(size: 13, weight: .semibold))
                             .frame(maxWidth: .infinity, minHeight: 25)
                             .padding(.vertical, 4)
-                            .background(selectedTab == tab ? Color.pink.opacity(0.2) : Color.clear)
-                            .foregroundColor(selectedTab == tab ? .pink : .gray)
+                            .background(statsVM.selectedTab == tab ? Color.pink.opacity(0.2) : Color.clear)
+                            .foregroundColor(statsVM.selectedTab == tab ? .pink : .gray)
                     }
                     .overlay(
                         RoundedRectangle(cornerRadius: 0)
@@ -70,7 +65,7 @@ struct StatsView: View {
             .padding(.horizontal)
 
             // Content View Switch
-            switch selectedTab {
+            switch statsVM.selectedTab {
             case .summary:
                 SummaryView().environmentObject(baseVM)
             case .ranking:

@@ -32,7 +32,7 @@ class LoginViewModel: ObservableObject {
             let db = Firestore.firestore()
             db.collection("users").document(user.uid).getDocument { snapshot, error in
                 if let error = error {
-                    self.alertMessage = "Fetch error: \(error.localizedDescription)"
+                    self.alertMessage = "\(error.localizedDescription)"
                     self.showingAlert = true
                     return
                 }
@@ -45,6 +45,7 @@ class LoginViewModel: ObservableObject {
                     
                     baseModel.updateDaysData()
                     baseModel.dailyUsage()
+                    
                     onSuccess()
                 } else {
                     self.alertMessage = "Could not find user."

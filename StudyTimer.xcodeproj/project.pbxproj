@@ -11,6 +11,7 @@
 		EF2EB2BE2E05EDAB0094BC9D /* WeeklyUsageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB2BD2E05EDAB0094BC9D /* WeeklyUsageModel.swift */; };
 		EF2EB2C02E05F39E0094BC9D /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB2BF2E05F39E0094BC9D /* LeaderboardView.swift */; };
 		EF4652892E0DCBF00077066A /* DateUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4652882E0DCBF00077066A /* DateUtil.swift */; };
+		EF9170722E1D89F100ADA6FB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9170712E1D89F000ADA6FB /* ProfileView.swift */; };
 		EFBBF0312D600FB800FB3D6E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBBF0302D600FB800FB3D6E /* SettingsView.swift */; };
 		EFBF55CB2DFF964400D43767 /* SoundUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBF55CA2DFF964400D43767 /* SoundUtil.swift */; };
 		EFBF55E22E0102B500D43767 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBF55E12E0102B500D43767 /* LoginView.swift */; };
@@ -38,6 +39,7 @@
 		EF2EB2BF2E05F39E0094BC9D /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		EF4652882E0DCBF00077066A /* DateUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtil.swift; sourceTree = "<group>"; };
 		EF7444932DECE9D400CB50A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EF9170712E1D89F000ADA6FB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		EFBBF0302D600FB800FB3D6E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		EFBF55CA2DFF964400D43767 /* SoundUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundUtil.swift; sourceTree = "<group>"; };
 		EFBF55E12E0102B500D43767 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		EF9170202E1C4EDA00ADA6FB /* Styles */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Styles; sourceTree = "<group>"; };
 		EFBF55D02E00B2D500D43767 /* Sounds */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sounds; sourceTree = "<group>"; };
 		EFBF55D22E00B51700D43767 /* ViewModels */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewModels; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -95,6 +98,7 @@
 		EFD72AD42D51994D00BF0B44 /* StudyTimer */ = {
 			isa = PBXGroup;
 			children = (
+				EF9170202E1C4EDA00ADA6FB /* Styles */,
 				EFBF55D22E00B51700D43767 /* ViewModels */,
 				EFBF55D02E00B2D500D43767 /* Sounds */,
 				EF7444932DECE9D400CB50A1 /* Info.plist */,
@@ -128,6 +132,7 @@
 				EF2EB2BB2E05EB980094BC9D /* StatsView.swift */,
 				EF2EB2BF2E05F39E0094BC9D /* LeaderboardView.swift */,
 				EFE026132E0C92F3008EE25E /* SummaryView.swift */,
+				EF9170712E1D89F000ADA6FB /* ProfileView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				EF9170202E1C4EDA00ADA6FB /* Styles */,
 				EFBF55D02E00B2D500D43767 /* Sounds */,
 				EFBF55D22E00B51700D43767 /* ViewModels */,
 			);
@@ -232,6 +238,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF9170722E1D89F100ADA6FB /* ProfileView.swift in Sources */,
 				EFE026162E0CE975008EE25E /* DailyUsageModel.swift in Sources */,
 				EFBBF0312D600FB800FB3D6E /* SettingsView.swift in Sources */,
 				EFD72AF32D5A99F700BF0B44 /* SettingsModel.swift in Sources */,

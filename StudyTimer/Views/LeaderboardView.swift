@@ -62,8 +62,7 @@ struct LeaderboardView: View {
                 LazyVStack(alignment: .leading, spacing: 0) {
                     ForEach(Array(viewModel.entries.enumerated()), id: \.1.id) { index, entry in
                         
-                       
-                        
+                    
                         HStack {
                             Text("\(index + 1)")
                                 .frame(width: 30, alignment: .trailing)

@@ -8,10 +8,6 @@
 import SwiftUI
 import Charts
 
-
-import SwiftUI
-import Charts
-
 struct SummaryView: View {
     
     @EnvironmentObject var baseVM: BaseViewModel

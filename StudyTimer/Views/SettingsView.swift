@@ -25,7 +25,7 @@ struct SettingsView: View {
                     Text("Setting")
                         .font(.title)
                         .bold()
-                        .foregroundColor(Color(UIColor(hex: 0x504444)))
+                        .foregroundColor(.black)
                     
                     
                     HStack {
@@ -34,8 +34,7 @@ struct SettingsView: View {
                         }) {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.black)
-                            Text("Back")
-                                .foregroundColor(.black)
+                           
                         }
                         .padding(.leading)
                         Spacer()
@@ -600,6 +599,8 @@ private struct ColorPickerView: View { //want to convert to centered popup event
                     .disabled(settingsModel.selectedColor == Settings.allColors[i])
                 }
             }
+            
+            
             
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .center)
             .background(Color.white)

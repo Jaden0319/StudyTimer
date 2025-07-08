@@ -102,99 +102,120 @@ struct BaseView: View {
                     .background(Color.black)
                     .opacity(0.6)
                 
-                VStack { //Timer Section
+                ZStack {
+                   
                     
-                    HStack { //Top Button Controls
+                    VStack { //Timer Section
                         
-                        Button("StudyTime") {
-                            //done
-                            baseVM.modeClick(mode: 0)
-                            //Add Button Action
-                        }.font(Font.custom("Avenir-Medium", size: 16))
-                            .bold()
-                            .font(.largeTitle)
-                            .foregroundColor(baseVM.settingsModel.isStudyTime() ? .black : .white)
-                            .padding(2)
-                            .disabled(baseVM.settingsModel.isStudyTime())
-                        
-                        Spacer()
-                        
-                        Button("Short Break") {
-                            //done\
-                            baseVM.modeClick(mode: 1)
-                        }.font(Font.custom("Avenir-Medium", size: 16))
-                            .bold()
-                            .font(.largeTitle)
-                            .foregroundColor(baseVM.settingsModel.isShortBreak() ? .black : .white)
-                            .padding(2)
-                            .disabled(baseVM.settingsModel.isShortBreak())
+                        HStack { //Top Button Controls
                             
-                        
-                        Spacer()
-                        
-                        Button("Long Break") {
-                            //done
-                            baseVM.modeClick(mode: 2)
-                        }.font(Font.custom("Avenir-Medium", size: 16))
-                            .bold()
-                            .font(.largeTitle)
-                            .foregroundColor(baseVM.settingsModel.isLongBreak() ? .black : .white)
-                            .padding(2)
-                            .disabled(baseVM.settingsModel.isLongBreak())
-                        
-                    }.frame(width: screenSize.width - 70, height: 50, alignment: .leading)
-                    //Top Button Controls
-                    
-                    HStack { //Clock Section
-                        
-                        VStack {
-                            
-                            Text("\(baseVM.time)")
-                                .font(Font.custom(Settings.fonts[baseVM.settingsModel.settings.timerFont] ?? "Avenir-Medium", size: 55).bold())
-                                .alert("Timer Done!", isPresented: $baseVM.timerShowingAlert) {
-            
-                                }
-                                .padding()
-                                .cornerRadius(20)
-                                .frame(width: screenSize.width - 80, height: 90)
+                            Button("StudyTime") {
+                                //done
+                                baseVM.modeClick(mode: 0)
+                                //Add Button Action
+                            }.font(Font.custom("Avenir-Medium", size: screenSize.width * 0.04))
+                                .bold()
+                                .font(.largeTitle)
                                 .foregroundColor(.white)
+                                .shadow(color: .black, radius: 1)
+                                //.foregroundColor(baseVM.settingsModel.isStudyTime() ? .black : .white)
+                                .padding(5)
+                                
+                                .background(
+                                    baseVM.settingsModel.isStudyTime() ?
+                                        Color.black.opacity(0.4) : Color.clear
+                                )
+                                .cornerRadius(6)
+                                .disabled(baseVM.settingsModel.isStudyTime())
+                                
                             
-                        }.onReceive(baseVM.timer) { _ in
-                            baseVM.handleTimerUpdate()
-                        }  
+                            
+                            
+                            Spacer()
+                            
+                            Button("Short Break") {
+                                //done\
+                                baseVM.modeClick(mode: 1)
+                            }.font(Font.custom("Avenir-Medium", size: screenSize.width * 0.04))
+                                .bold()
+                                .foregroundColor(.white)
+                                .padding(5)
+                                .background(
+                                    baseVM.settingsModel.isShortBreak() ?
+                                        Color.black.opacity(0.4) : Color.clear
+                                )
+                                .cornerRadius(6)
+                                .disabled(baseVM.settingsModel.isShortBreak())
+                                .shadow(color: .black, radius: 1)
+                            
+                            Spacer()
+                            
+                            Button("Long Break") {
+                              
+                                baseVM.modeClick(mode: 2)
+                            }.font(Font.custom("Avenir-Medium", size: screenSize.width * 0.04))
+                                .bold()
+                                .foregroundColor(.white)
+                                .padding(5)
+                                .background(
+                                    baseVM.settingsModel.isLongBreak() ?
+                                        Color.black.opacity(0.4) : Color.clear
+                                )
+                                .cornerRadius(6)
+                                .disabled(baseVM.settingsModel.isLongBreak())
+                                .shadow(color: .black, radius: 1)
+                            
+                        }.frame(width: screenSize.width - 70, height: 50, alignment: .leading)
+                        //Top Button Controls
                         
-                    }.frame(width: screenSize.width - 80, height: 110, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        .padding(5)
-                    //Clock Section
-                    
-                    VStack {  //Start Button
-                        Button("\(baseVM.startText)") { //done
-                            baseVM.startButtonClick()
-                        }.buttonStyle(.bordered)
-                            .buttonBorderShape(.roundedRectangle(radius: 1))
-                            .background(Color.white)
-                            .foregroundColor(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
-                            .bold()
-                            .frame(width: 300, height: 300, alignment: .center)
-                            .shadow(radius: 5)
+                        HStack { //Clock Section
+                            
+                            VStack {
+                                
+                                Text("\(baseVM.time)")
+                                    .font(Font.custom(Settings.fonts[baseVM.settingsModel.settings.timerFont] ?? "Avenir-Medium", size: 55).bold())
+                                    .alert("Timer Done!", isPresented: $baseVM.timerShowingAlert) {
+                                        
+                                    }
+                                    .padding()
+                                    .cornerRadius(20)
+                                    .frame(width: screenSize.width - 80, height: 90)
+                                    .foregroundColor(.white)
+                                
+                            }.onReceive(baseVM.timer) { _ in
+                                baseVM.handleTimerUpdate()
+                            }
+                            
+                        }.frame(width: screenSize.width - 80, height: 110, alignment: .center)
+                            .padding(5)
+                        //Clock Section
                         
-                    }.frame(width: screenSize.width - 150, height: 50, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                        .padding() //Start Button
+                        //Start Button
+                        
+                    }.frame(width: screenSize.width - 40, height: (screenSize.height / 3), alignment: .top)
+                        .background(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
+                        .cornerRadius(18)
+                        .padding(20) //Timer Section
+                        .brightness(0.14)
                     
-                }.frame(width: screenSize.width - 50, height: (screenSize.height / 3), alignment: .top)
-                    .background(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
-                    .cornerRadius(18)
-                    .padding(20) //Timer Section
-                    .brightness(0.14)
-                
+                    Button("\(baseVM.startText)") { //done
+                        baseVM.startButtonClick()
+                    }.buttonStyle(startButtonStyle(color: baseVM.settingsModel.settings.backgroundColor, pressed: baseVM.timerIsActive))
+                        .padding(.top, 150)
+                }
             }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
                 .background(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
                 .ignoresSafeArea() //Screen
+            
+            
+            
+            
+            Spacer()
+              
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
     }
     
 }
-
 
 #Preview {
     BaseView()

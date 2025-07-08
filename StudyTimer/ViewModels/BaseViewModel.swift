@@ -83,7 +83,7 @@ class BaseViewModel: ObservableObject {
         if let startTime = sessionStartTime, let _ = user.id {
               let sessionDuration = Int(Date().timeIntervalSince(startTime))
               accumulatedSessionSeconds += sessionDuration
-              logTimerUsage(seconds: sessionDuration)
+              logWeeklyUsage(seconds: sessionDuration)
               logTotalSecondsToActivitySummary(seconds: sessionDuration)
               logDailyUsage(seconds: sessionDuration)
           }
@@ -116,7 +116,7 @@ class BaseViewModel: ObservableObject {
             if let startTime = sessionStartTime, let _ = user.id {
                let sessionDuration = Int(Date().timeIntervalSince(startTime))
                accumulatedSessionSeconds += sessionDuration
-               logTimerUsage(seconds: sessionDuration)
+               logWeeklyUsage(seconds: sessionDuration)
                logTotalSecondsToActivitySummary(seconds: sessionDuration)
                logDailyUsage(seconds: sessionDuration)
             }
@@ -212,7 +212,6 @@ class BaseViewModel: ObservableObject {
         
         updateCountdown()
         
-        
         if(!timerIsActive) {
             startText = "Start"
         }
@@ -245,41 +244,66 @@ class BaseViewModel: ObservableObject {
         if(!timerIsActive) {
             start(minutes: minutes)
             startText = "Pause"
+            timerIsActive = true
         }
         else {
             pause()
             startText = "Start"
+            timerIsActive = false
         }
         
         AudioServicesPlaySystemSound(1104)
     }
     
-    func logTimerUsage(seconds: Int) {
+    func logWeeklyUsage(seconds: Int) {
         guard let userId = user.id else { return }
-
+        
         let db = Firestore.firestore()
-        let now = Date()
         let calendar = Calendar.current
-        let week = calendar.component(.weekOfYear, from: now)
+        let now = Date()
+        
+        let weekOfYear = calendar.component(.weekOfYear, from: now)
         let year = calendar.component(.yearForWeekOfYear, from: now)
 
         let usageRef = db
             .collection("users")
             .document(userId)
             .collection("weeklyUsage")
-            .whereField("weekOfYear", isEqualTo: week)
+            .whereField("weekOfYear", isEqualTo: weekOfYear)
             .whereField("year", isEqualTo: year)
 
         usageRef.getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching weekly usage: \(error)")
+                return
+            }
+
             if let document = snapshot?.documents.first {
                 let currentSeconds = document.data()["totalSeconds"] as? Int ?? 0
                 document.reference.updateData([
                     "totalSeconds": currentSeconds + seconds
                 ])
+            } else {
+                let newEntry: [String: Any] = [
+                    "userId": userId,
+                    "nickname": self.user.nickname,
+                    "weekOfYear": weekOfYear,
+                    "year": year,
+                    "totalSeconds": seconds
+                ]
+
+                db.collection("users")
+                    .document(userId)
+                    .collection("weeklyUsage")
+                    .addDocument(data: newEntry) { error in
+                        if let error = error {
+                            print("Error adding new weekly usage: \(error)")
+                        }
+                    }
             }
         }
     }
-    
+
     func logTotalSecondsToActivitySummary(seconds: Int) {
         guard let userId = user.id else { return }
 
@@ -368,13 +392,13 @@ class BaseViewModel: ObservableObject {
             }
 
             if let document = snapshot?.documents.first {
-                // Update existing document
+                
                 let currentSeconds = document.data()["totalSeconds"] as? Double ?? 0.0
                 document.reference.updateData([
                     "totalSeconds": currentSeconds + Double(seconds)
                 ])
             } else {
-                // Create new document
+                
                 let newEntry: [String: Any] = [
                     "userId": userId,
                     "totalSeconds": Double(seconds),

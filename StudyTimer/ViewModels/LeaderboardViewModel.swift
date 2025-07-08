@@ -23,6 +23,7 @@ class LeaderboardViewModel: ObservableObject {
         let calendar = Calendar.current
         let week = calendar.component(.weekOfYear, from: now)
         let year = calendar.component(.yearForWeekOfYear, from: now)
+     
 
         db.collectionGroup("weeklyUsage")
             .whereField("weekOfYear", isEqualTo: week)
