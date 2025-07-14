@@ -57,7 +57,7 @@ class CreateAccountViewModel: ObservableObject {
                     }
                     
                     let defaultSettings = Settings()
-                    let newUser = User(id: uid, email: self.email, nickname: self.nickname, settings: defaultSettings)
+                    let newUser = User(id: uid, email: self.email, nickname: self.nickname, settings: defaultSettings, profileIcon: "man1")
                     
                     do {
                         try db.collection("users").document(uid).setData(from: newUser)
@@ -71,6 +71,7 @@ class CreateAccountViewModel: ObservableObject {
                         let usageData: [String: Any] = [
                             "userId": uid,
                             "nickname": self.nickname,
+                            "profileIcon": "man1",
                             "weekOfYear": week,
                             "year": year,
                             "totalSeconds": 0

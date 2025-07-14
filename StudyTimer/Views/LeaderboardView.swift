@@ -7,27 +7,13 @@
 import SwiftUI
 
 struct LeaderboardView: View {
+    
+    
     @StateObject private var viewModel = LeaderboardViewModel()
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
         VStack(spacing: 0) {
-            
-            // Back button
-            /*HStack {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
-                    Text("Back")
-                        .foregroundColor(.black)
-                }
-                .padding(.leading)
-                Spacer()
-            }
-            .padding(.top, 8)*/
- 
 
             // Subtitle
             Text("Focus Time This Week")
@@ -67,11 +53,19 @@ struct LeaderboardView: View {
                             Text("\(index + 1)")
                                 .frame(width: 30, alignment: .trailing)
                                 .font(.system(size: 16, weight: .bold))
-
+                            
+                           
+                            Image(entry.profileIcon)
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .padding(.trailing, 10)
+                            
                             Text(entry.nickname)
                                 .font(.system(size: 16))
                                 .lineLimit(1)
                                 .truncationMode(.tail)
+                            
+                            
 
                             Spacer()
 

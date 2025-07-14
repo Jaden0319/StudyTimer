@@ -33,6 +33,19 @@ struct Settings: Codable, Equatable {
         0xF4D35E, 0xB388EB, 0xFFA07A,
         0x8BC34A, 0x0FFB34
     ]
+    
+    static let avatars: [Int: String] = [
+        0: "man1",
+        1: "man2",
+        2: "man3",
+        3: "man4",
+        4: "man5",
+        5: "woman1",
+        6: "woman2",
+        7: "woman3",
+        8: "woman4",
+        9: "woman5"
+    ]
     // MARK: - User settings
     var alarmSound: String = "Default"
     var tickingOn: Bool = false

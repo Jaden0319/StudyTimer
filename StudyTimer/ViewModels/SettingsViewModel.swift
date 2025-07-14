@@ -10,7 +10,7 @@ import AVFoundation
 
 
 class SettingsViewModel: ObservableObject {
-    @Published  var settings: Settings = Settings()
+    @Published  var settings: Settings = Settings() 
     @Published  var studyMins: String = "25"
     @Published  var shortBreakMins: String = "5"
     @Published  var longBreakMins: String = "10"

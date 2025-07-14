@@ -13,6 +13,7 @@ struct User: Identifiable, Codable {
     var email: String
     var nickname: String
     var settings: Settings
+    var profileIcon: String
     
-    static let `default` = User(id: nil, email: "", nickname: "defualt", settings: .default)
+    static let `default` = User(id: nil, email: "", nickname: "defualt", settings: .default, profileIcon: "man1")
 }

@@ -268,6 +268,8 @@ struct SettingsView: View {
                         }.padding([.leading, .trailing], 10)
                             .tint(Color.blue)
                         
+                        Spacer()
+                        
                         HStack {
                             
                             Text("Auto Start StudyTime")
@@ -332,6 +334,7 @@ struct SettingsView: View {
                             Spacer()
                         }
                         .padding(.leading, 10)
+                        .padding(.bottom, 10)
                         
                         
                         
@@ -423,8 +426,9 @@ struct SettingsView: View {
                         
                         Text("Timer Font")
                             .font(.system(size: 16))
-                            .padding(.leading, 11)
                             .bold()
+                            .padding(.leading, 10)
+                           
                         
                         
                         Spacer()
@@ -488,7 +492,7 @@ struct SettingsView: View {
                         
                         
                         Text("Alarm Sound")
-                            .padding(.leading, 8)
+                            .padding(.leading, 10)
                             .font(.system(size: 16))
                             .bold()
                         

@@ -3,7 +3,7 @@
 //  StudyTimer
 //
 //  Created by Jaden Creech on 6/20/25.
-//
+//will need function to set all users weekly usage once a week, (server
 
 import Foundation
 import AVFoundation

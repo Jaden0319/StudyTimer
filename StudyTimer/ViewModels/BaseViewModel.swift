@@ -52,6 +52,8 @@ class BaseViewModel: ObservableObject {
         daysAccessed: 0
     )
     
+    @Published var profileIcon: String = "person.circle.fill"
+    
     func setMinutes(mins: Float) {
         self.minutes = mins
     }
@@ -287,6 +289,7 @@ class BaseViewModel: ObservableObject {
                 let newEntry: [String: Any] = [
                     "userId": userId,
                     "nickname": self.user.nickname,
+                    "profileIcon": self.user.profileIcon,
                     "weekOfYear": weekOfYear,
                     "year": year,
                     "totalSeconds": seconds
@@ -300,6 +303,60 @@ class BaseViewModel: ObservableObject {
                             print("Error adding new weekly usage: \(error)")
                         }
                     }
+            }
+        }
+    }
+    
+    func updateWeeklyUsageMetadata() {
+        guard let userId = user.id else { return }
+
+        let db = Firestore.firestore()
+        let calendar = Calendar.current
+        let now = Date()
+
+        let weekOfYear = calendar.component(.weekOfYear, from: now)
+        let year = calendar.component(.yearForWeekOfYear, from: now)
+
+        let usageRef = db
+            .collection("users")
+            .document(userId)
+            .collection("weeklyUsage")
+            .whereField("weekOfYear", isEqualTo: weekOfYear)
+            .whereField("year", isEqualTo: year)
+
+        usageRef.getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching weekly usage: \(error.localizedDescription)")
+                return
+            }
+
+            guard let document = snapshot?.documents.first else {
+                print("No weekly usage found for current week.")
+                return
+            }
+
+            var updates: [String: Any] = [:]
+            let data = document.data()
+
+            if let storedNickname = data["nickname"] as? String, storedNickname != self.user.nickname {
+                updates["nickname"] = self.user.nickname
+                print(self.user.nickname)
+            }
+
+            if let storedIcon = data["profileIcon"] as? String, storedIcon != self.user.profileIcon {
+                updates["profileIcon"] = self.user.profileIcon
+            }
+
+            if !updates.isEmpty {
+                document.reference.updateData(updates) { error in
+                    if let error = error {
+                        print("Failed to update metadata: \(error.localizedDescription)")
+                    } else {
+                        print("Updated weekly usage metadata: \(updates)")
+                    }
+                }
+            } else {
+                print("No changes to nickname or profileIcon detected.")
             }
         }
     }
@@ -412,6 +469,9 @@ class BaseViewModel: ObservableObject {
             }
         }
     }
+
+  
+
     
     func dailyUsage() {
         guard let userId = user.id else { return }

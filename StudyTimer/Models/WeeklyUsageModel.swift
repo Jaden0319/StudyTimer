@@ -12,6 +12,7 @@ struct WeeklyUsage: Identifiable, Codable {
     @DocumentID var id: String?
     var userId: String
     var nickname: String
+    var profileIcon: String
     var weekOfYear: Int
     var year: Int
     var totalSeconds: Int

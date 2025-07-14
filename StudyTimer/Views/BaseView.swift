@@ -24,6 +24,7 @@ struct BaseView: View {
                         Text("StudyTimer")
                             .font(Font.custom("Avenir-Medium", size: 23))
                             .bold()
+                            
                         
                     } icon: {
                         Image(systemName: "graduationcap")
@@ -34,7 +35,7 @@ struct BaseView: View {
                         .foregroundColor(.white)
                        
                     //Title and Icon
-                    
+            
                     Spacer()
                     
                     Image(systemName: "chart.bar.fill") //Report Button
@@ -71,24 +72,40 @@ struct BaseView: View {
                               }
                         }
                     
-                    Image(systemName: "person.crop.circle.fill")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                    .foregroundColor(baseVM.user.id == nil ? .white : .black)
-                        .padding(.trailing, 10)
-                        .onTapGesture {
-                            baseVM.openProfileAndPauseTimer()
+                    Group {
+                        if baseVM.user.id == nil {
+                            Image(systemName: "person.crop.circle.fill")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.white)
+                                .padding(.trailing, 10)
+                        } else {
+                            Image(baseVM.user.profileIcon)
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .padding(.trailing, 10)
                         }
-                        .fullScreenCover(isPresented: $baseVM.showingProfile) {
-                            
-                            
+                    }
+                    .onTapGesture {
+                        baseVM.openProfileAndPauseTimer()
+                    }
+                    .fullScreenCover(isPresented: $baseVM.showingProfile) {
+                        if baseVM.user.id == nil {
                             LoginView()
                                 .environmentObject(baseVM)
-                                .onDisappear() { //done
+                                .onDisappear {
+                                    baseVM.exitProfile()
+                                    print("Signed in")
+                                }
+                        } else {
+                            ProfileView()
+                                .environmentObject(baseVM)
+                                .onDisappear {
                                     baseVM.exitProfile()
                                     print("\(baseVM.user.email)'s signed in")
-                              }
+                                }
                         }
+                    }
                     
                 }.frame(width: screenSize.width, height: 70, alignment: .topLeading)
                     .padding(.top, 60)
@@ -127,9 +144,7 @@ struct BaseView: View {
                                 )
                                 .cornerRadius(6)
                                 .disabled(baseVM.settingsModel.isStudyTime())
-                                
-                            
-                            
+                     
                             
                             Spacer()
                             
