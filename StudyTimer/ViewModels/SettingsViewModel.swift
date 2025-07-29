@@ -10,23 +10,26 @@ import AVFoundation
 
 
 class SettingsViewModel: ObservableObject {
-    @Published  var settings: Settings = Settings() 
-    @Published  var studyMins: String = "25"
-    @Published  var shortBreakMins: String = "5"
-    @Published  var longBreakMins: String = "10"
-    @Published  var longBreakIntv: String = "2"
-    @Published  var studyInc = false
-    @Published  var studyDec = false
-    @Published  var shortInc = false
-    @Published  var shortDec = false
-    @Published  var longInc = false
-    @Published  var longDec = false
-    @Published  var longIntvInc = false
-    @Published  var longIntvDec = false
-    @Published  var showColorPickerStudy = false
-    @Published  var showColorPickerShort = false
-    @Published  var showColorPickerLong = false
-    @Published  var selectedColor: Int = 0
+    @Published var settings: Settings = Settings()
+    @Published var studyMins: String = "25"
+    @Published var shortBreakMins: String = "5"
+    @Published var longBreakMins: String = "10"
+    @Published var longBreakIntv: String = "2"
+    @Published var studyInc = false
+    @Published var studyDec = false
+    @Published var shortInc = false
+    @Published var shortDec = false
+    @Published var longInc = false
+    @Published var longDec = false
+    @Published var longIntvInc = false
+    @Published var longIntvDec = false
+    @Published var showColorPickerStudy = false
+    @Published var showColorPickerShort = false
+    @Published var showColorPickerLong = false
+    @Published var selectedColor: Int = 0
+    @Published var notificationInc = false
+    @Published var notificationDec = false
+    @Published var showSettingsAlert = false
     
     func updateSettings(newSettings: Settings) {
             self.settings = newSettings
@@ -127,12 +130,22 @@ class SettingsViewModel: ObservableObject {
         else if mode == 2 {
             longBreakMins = incrementFormattedNumericString(numericString: longBreakMins) ?? longBreakMins
             setModeTime(mode: 2, time: Float(longBreakMins) ?? 10)
-            AudioServicesPlaySystemSound(1104)
             longInc = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.longInc = false
             }
         }
+        else if mode == 3 {
+            if(settings.notificationTime <= 90){
+                settings.notificationTime += 1
+                notificationInc = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.notificationInc = false
+                }
+            }
+                
+        }
+       
         
         AudioServicesPlaySystemSound(1104)
     }
@@ -162,11 +175,18 @@ class SettingsViewModel: ObservableObject {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.longDec = false
             }
+        } else if mode == 3 {
+            if settings.notificationTime > 1 {
+                settings.notificationTime -= 1
+                notificationDec = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.notificationDec = false
+                }
+            }
         }
         
         AudioServicesPlaySystemSound(1104)
     }
-    
     private func incrementFormattedNumericString(numericString:String, increment by:Int=1) -> String? {
         
         guard let numericValue = Int(numericString) else {
@@ -213,5 +233,7 @@ class SettingsViewModel: ObservableObject {
             self.longIntvDec = false
         }
     }
+    
+    
 
 }

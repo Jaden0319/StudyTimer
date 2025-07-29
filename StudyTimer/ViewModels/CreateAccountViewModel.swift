@@ -41,6 +41,7 @@ class CreateAccountViewModel: ObservableObject {
                     return
                 }
                 
+            
                 Auth.auth().createUser(withEmail: self.email, password: self.password) { result, error in
                     if let error = error {
                         self.alertMessage = "Auth error: \(error.localizedDescription)"
@@ -56,55 +57,70 @@ class CreateAccountViewModel: ObservableObject {
                         return
                     }
                     
-                    let defaultSettings = Settings()
-                    let newUser = User(id: uid, email: self.email, nickname: self.nickname, settings: defaultSettings, profileIcon: "man1")
-                    
-                    do {
-                        try db.collection("users").document(uid).setData(from: newUser)
+                    UNUserNotificationCenter.current().getNotificationSettings { settings in
+                        let notificationsAllowed = settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional
                         
-                        // Weekly usage
-                        let calendar = Calendar.current
-                        let now = Date()
-                        let week = calendar.component(.weekOfYear, from: now)
-                        let year = calendar.component(.yearForWeekOfYear, from: now)
-                        
-                        let usageData: [String: Any] = [
-                            "userId": uid,
-                            "nickname": self.nickname,
-                            "profileIcon": "man1",
-                            "weekOfYear": week,
-                            "year": year,
-                            "totalSeconds": 0
-                        ]
-                        
-                        db.collection("users")
-                            .document(uid)
-                            .collection("weeklyUsage")
-                            .addDocument(data: usageData)
-                        
-                        // Activity summary
-                        let activityData: [String: Any] = [
-                            "userId": uid,
-                            "totalSeconds": 0.0,
-                            "lastDayActive": Timestamp(date: now),
-                            "dayStreak": 0,
-                            "daysAccessed": 1
-                        ]
-                        
-                        db.collection("users")
-                            .document(uid)
-                            .collection("activitySummary")
-                            .document("summary")
-                            .setData(activityData)
-                        
-                        completion(true)
-                        
-                    } catch {
-                        self.alertMessage = "Firestore error: \(error.localizedDescription)"
-                        self.showingAlert = true
-                        completion(false)
+                        DispatchQueue.main.async {
+                       
+                            var newUser = User(id: uid,
+                                               email: self.email,
+                                               nickname: self.nickname,
+                                               settings: Settings.default,
+                                               profileIcon: "man1")
+                            
+                            if(notificationsAllowed) {
+                                newUser.settings.notificationsOn = true
+                            }
+                            
+                            do {
+                                try db.collection("users").document(uid).setData(from: newUser)
+                                
+                                // Weekly usage
+                                let calendar = Calendar.current
+                                let now = Date()
+                                let week = calendar.component(.weekOfYear, from: now)
+                                let year = calendar.component(.yearForWeekOfYear, from: now)
+                                
+                                let usageData: [String: Any] = [
+                                    "userId": uid,
+                                    "nickname": self.nickname,
+                                    "profileIcon": "man1",
+                                    "weekOfYear": week,
+                                    "year": year,
+                                    "totalSeconds": 0
+                                ]
+                                
+                                db.collection("users")
+                                    .document(uid)
+                                    .collection("weeklyUsage")
+                                    .addDocument(data: usageData)
+                                
+                                // Activity summary
+                                let activityData: [String: Any] = [
+                                    "userId": uid,
+                                    "totalSeconds": 0.0,
+                                    "lastDayActive": Timestamp(date: now),
+                                    "dayStreak": 0,
+                                    "daysAccessed": 1
+                                ]
+                                
+                                db.collection("users")
+                                    .document(uid)
+                                    .collection("activitySummary")
+                                    .document("summary")
+                                    .setData(activityData)
+                                
+                                completion(true)
+                                
+                            } catch {
+                                self.alertMessage = "Firestore error: \(error.localizedDescription)"
+                                self.showingAlert = true
+                                completion(false)
+                            }
+                        }
                     }
                 }
             }
     }
+
 }

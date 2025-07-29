@@ -35,7 +35,6 @@ struct BaseView: View {
                         .foregroundColor(.white)
                        
                     //Title and Icon
-            
                     Spacer()
                     
                     Image(systemName: "chart.bar.fill") //Report Button
@@ -71,7 +70,6 @@ struct BaseView: View {
                                     }
                               }
                         }
-                    
                     Group {
                         if baseVM.user.id == nil {
                             Image(systemName: "person.crop.circle.fill")
@@ -121,7 +119,6 @@ struct BaseView: View {
                 
                 ZStack {
                    
-                    
                     VStack { //Timer Section
                         
                         HStack { //Top Button Controls
@@ -145,7 +142,6 @@ struct BaseView: View {
                                 .cornerRadius(6)
                                 .disabled(baseVM.settingsModel.isStudyTime())
                      
-                            
                             Spacer()
                             
                             Button("Short Break") {
@@ -198,6 +194,7 @@ struct BaseView: View {
                                     .foregroundColor(.white)
                                 
                             }.onReceive(baseVM.timer) { _ in
+                                
                                 baseVM.handleTimerUpdate()
                             }
                             
@@ -222,12 +219,18 @@ struct BaseView: View {
                 .background(Color(UIColor(hex: baseVM.settingsModel.settings.backgroundColor)))
                 .ignoresSafeArea() //Screen
             
-            
-            
-            
             Spacer()
               
         }.frame(width: screenSize.width, height: screenSize.height, alignment: .top)
+            .onAppear {
+                NotificationManager.instance.requestAuth { granted in
+                    if granted {
+                        baseVM.settingsModel.settings.notificationsOn = true
+                    } else {
+                        baseVM.settingsModel.settings.notificationsOn = false
+                    }
+                }
+            }
     }
     
 }

@@ -13,9 +13,8 @@ struct SettingsView: View {
     //add vars that pass data back in forth between models when settings are updated
     
     /*Want to add save button eventually, also edit back buttan choose new design/color for the settings title*/
-    
     var body: some View {
-        
+    
         VStack {
             
             VStack {
@@ -44,7 +43,7 @@ struct SettingsView: View {
                 .padding(.top, 47)
                 
                 
-                Divider().background(Color.black)
+                Divider().background(Color.gray)
             }.padding(.bottom, 5)
             
             ScrollView {
@@ -549,7 +548,156 @@ struct SettingsView: View {
                     .tint(Color.blue)
                     .padding(.bottom)
                     
-                }.padding(.bottom, 30)
+                    Divider().background(Color.gray)
+                    
+            
+                    HStack {
+                        Image(systemName: "iphone.radiowaves.left.and.right")
+                            .resizable()
+                            .frame(width: 65, height: 45)
+                            .foregroundColor(Color.gray)
+                            .padding(.leading, 10)
+                        
+                        Text("Notification")
+                            .font(.system(size: 20))
+                            .bold()
+                            .font(.title)
+                            .foregroundColor(Color.gray)
+                        
+                    }.frame(width: screenSize.width, height: 92, alignment: .leading)
+                        
+                    VStack(spacing:30){
+                        HStack { //Set to be removed
+                            
+                            Text("Enable Notifications")
+                                .font(.system(size: 16))
+                                .bold()
+                                .padding(.leading, 10)
+                            
+                            Toggle("", isOn: $settingsModel.settings.notificationsOn)
+                                .padding(.trailing, 8)
+                                .tint(Color.blue)
+                                .onChange(of: settingsModel.settings.notificationsOn) { isOn in
+                                    if isOn {
+                                        UNUserNotificationCenter.current().getNotificationSettings { settings in
+                                            DispatchQueue.main.async {
+                                                switch settings.authorizationStatus {
+                                                case .denied:
+                                                    settingsModel.settings.notificationsOn = false
+                                                    settingsModel.showSettingsAlert = true
+                                                case .notDetermined:
+                                                    NotificationManager.instance.requestAuth { granted in
+                                                    }
+                                                default:
+                                                    break
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        NotificationManager.instance.clearPending()
+                                    }
+                                }
+                                .alert(isPresented: $settingsModel.showSettingsAlert) {
+                                    Alert(
+                                        title: Text("Notifications Disabled"),
+                                        message: Text("To enable notifications, go to Settings -> Notifications and enable for StudyTimer."),
+                                        primaryButton: .default(Text("Open Settings")) {
+                                            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                                                UIApplication.shared.open(settingsURL)
+                                            }
+                                        },
+                                        secondaryButton: .cancel()
+                                    )
+                                }
+
+                            
+                        }
+                        
+                        HStack {
+                        
+                            Text("Reminder")
+                                .font(.system(size: 16))
+                                .bold()
+                                .padding(.leading, 10)
+                            
+                            Spacer()
+                            Menu {
+                                Picker(selection: $settingsModel.settings.notificationMode, label: EmptyView()) {
+                                    ForEach(Array(Settings.notificationModes.keys).sorted(), id: \.self) { key in
+                                        Text(Settings.notificationModes[key] ?? "")
+                                            .foregroundColor(.black)
+                                            .bold()
+                                            .tag(key)
+                                    }
+                                }
+                                    } label: {
+                                        HStack {
+                                            Text(Settings.notificationModes[settingsModel.settings.notificationMode] ?? "Last")
+                                                .foregroundColor(.black)
+                                                .font(.system(size: 16))
+                                                .padding(10)
+                                            Spacer()
+                                            Image(systemName: "chevron.down")
+                                                .foregroundColor(.black)
+                                                .padding(.trailing, 5)
+                                        } .frame(width: (screenSize.width / 3.5) - 10, height: 50, alignment: .leading)
+                                        .background(Color(UIColor(hex: 0xefefef)))
+                                        .cornerRadius(6)
+                                        .padding(.trailing, 10)
+                                    }
+                            
+                            HStack {
+                                // Show notificationTime as text, no direct editing
+                                Text("\(settingsModel.settings.notificationTime)")
+                                    .frame(width: ((screenSize.width / 3.5) - 60), height: 50)
+                                    .foregroundColor(.black)
+                                    .background(Color.clear)
+                                    .scaledToFit()
+                                
+                                VStack {
+                                    // Increment button
+                                    Button(action: {
+                                        settingsModel.incrementButtonAction(mode: 3)
+                                    }) {
+                                        Image(systemName: "arrowtriangle.up.fill")
+                                            .scaledToFit()
+                                            .padding(.top, 15)
+                                            .scaleEffect(settingsModel.notificationInc ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: settingsModel.notificationInc)
+                                            .foregroundColor(.black)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    // Decrement button
+                                    Button(action: {
+                                        settingsModel.decrementButtonAction(mode: 3)
+                                    }) {
+                                        Image(systemName: "arrowtriangle.down.fill")
+                                            .scaledToFit()
+                                            .padding(.bottom, 15)
+                                            .scaleEffect(settingsModel.notificationDec ? 1.2 : 1.0)
+                                            .animation(.easeInOut(duration: 0.2), value: settingsModel.notificationDec)
+                                            .foregroundColor(.black)
+                                    }
+                                }
+                            }
+                            .frame(width: (screenSize.width / 3.5) - 20, height: 50, alignment: .leading)
+                            .background(Color(UIColor(hex: 0xefefef)))
+                            .cornerRadius(6)
+                           
+                            
+                            Text("min").padding(.trailing, 10)
+                                .font(.system(size: 14))
+                                .bold()
+                                .padding(.leading, 5)
+                        }
+                        
+                    }.frame(width: screenSize.width, height: 92, alignment: .topLeading)
+                    Divider().background(Color.gray)
+                        .padding(.top, 50)
+  
+                }.padding(.bottom, 100)
                 
             }
             

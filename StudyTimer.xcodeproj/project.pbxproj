@@ -11,6 +11,7 @@
 		EF2EB2BE2E05EDAB0094BC9D /* WeeklyUsageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB2BD2E05EDAB0094BC9D /* WeeklyUsageModel.swift */; };
 		EF2EB2C02E05F39E0094BC9D /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2EB2BF2E05F39E0094BC9D /* LeaderboardView.swift */; };
 		EF4652892E0DCBF00077066A /* DateUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4652882E0DCBF00077066A /* DateUtil.swift */; };
+		EF87C3AD2E270C4E0011374A /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF87C3AC2E270C4E0011374A /* NotificationManager.swift */; };
 		EF9170722E1D89F100ADA6FB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF9170712E1D89F000ADA6FB /* ProfileView.swift */; };
 		EFBBF0312D600FB800FB3D6E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBBF0302D600FB800FB3D6E /* SettingsView.swift */; };
 		EFBF55CB2DFF964400D43767 /* SoundUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFBF55CA2DFF964400D43767 /* SoundUtil.swift */; };
@@ -39,6 +40,7 @@
 		EF2EB2BF2E05F39E0094BC9D /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		EF4652882E0DCBF00077066A /* DateUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateUtil.swift; sourceTree = "<group>"; };
 		EF7444932DECE9D400CB50A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EF87C3AC2E270C4E0011374A /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		EF9170712E1D89F000ADA6FB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		EFBBF0302D600FB800FB3D6E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		EFBF55CA2DFF964400D43767 /* SoundUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundUtil.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				EFF3945D2E0368D800E494CB /* GoogleService-Info.plist */,
 				EFD72ADD2D51994E00BF0B44 /* Preview Content */,
 				EFD72AE82D51B10F00BF0B44 /* Utilities */,
+				EF87C3AC2E270C4E0011374A /* NotificationManager.swift */,
 			);
 			path = StudyTimer;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				EFD72AD82D51994D00BF0B44 /* BaseView.swift in Sources */,
 				EFD72ADA2D51994D00BF0B44 /* Item.swift in Sources */,
 				EF2EB2BC2E05EB980094BC9D /* StatsView.swift in Sources */,
+				EF87C3AD2E270C4E0011374A /* NotificationManager.swift in Sources */,
 				EFD72AD62D51994D00BF0B44 /* StudyTimerApp.swift in Sources */,
 				EFBF55CB2DFF964400D43767 /* SoundUtil.swift in Sources */,
 				EFE026142E0C92F3008EE25E /* SummaryView.swift in Sources */,

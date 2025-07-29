@@ -28,6 +28,11 @@ struct Settings: Codable, Equatable {
         "Orchestra": "orchestral_alarm"
     ]
     
+    static let notificationModes: [Int: String] = [
+        0:"Last",
+        1:"Every"
+    ]
+    
     static let allColors: [Int] = [
         0xE84D4D, 0x2EAACE, 0x11669C,
         0xF4D35E, 0xB388EB, 0xFFA07A,
@@ -58,6 +63,9 @@ struct Settings: Codable, Equatable {
     var breakCount: Int = 0
     var autoStartBreaks: Bool = false
     var autoStartStudy: Bool = false
+    var notificationsOn: Bool = false
+    var notificationMode: Int = 0 //0: Last, 1: Every
+    var notificationTime: Int = 5
     
     static let `default` = Settings()
     
@@ -70,6 +78,9 @@ struct Settings: Codable, Equatable {
         lhs.modeColors       == rhs.modeColors &&
         lhs.longBreakIntv    == rhs.longBreakIntv &&
         lhs.autoStartBreaks  == rhs.autoStartBreaks &&
-        lhs.autoStartStudy   == rhs.autoStartStudy
+        lhs.autoStartStudy   == rhs.autoStartStudy  &&
+        lhs.notificationsOn  == rhs.notificationsOn &&
+        lhs.notificationMode == rhs.notificationMode &&
+        lhs.notificationTime == rhs.notificationTime
     }
 }

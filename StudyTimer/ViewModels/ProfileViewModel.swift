@@ -51,6 +51,7 @@ class ProfileViewModel: ObservableObject {
             }
     }
     
+    //edit for deletion of weekly usage and act summary in fut
     func deleteAccount(baseModel: BaseViewModel, completion: @escaping (Error?) -> Void) {
         guard let userId = baseModel.user.id,
               let user = Auth.auth().currentUser else {

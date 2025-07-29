@@ -33,7 +33,7 @@ class BaseViewModel: ObservableObject {
     
     @Published var settingsModel: SettingsViewModel = SettingsViewModel()
     @Published var showingSettings = false
-    
+
     @Published var showingProfile = false
     @Published var user: User = .default
     
@@ -74,7 +74,45 @@ class BaseViewModel: ObservableObject {
         self.sessionStartTime = Date()
         SoundManager.shared.toggleBackgroundTicking(isOn: settingsModel.settings.tickingOn)
         
+        if(settingsModel.settings.notificationsOn) {
+            if(settingsModel.settings.notificationMode == 0) {
+                scheduleNotificationLast(secondsLeft: settingsModel.settings.notificationTime * 60, totalMinutes: minutes)
+            }
+            else if(settingsModel.settings.notificationMode == 1) {
+                scheduleNotificationEvery(intervalMinutes: settingsModel.settings.notificationTime, totalMinutes: minutes)
+            }
+        }
     }
+
+    func scheduleNotificationLast(secondsLeft: Int, totalMinutes: Float) {
+        let totalSeconds = Int(totalMinutes * 60)
+        let fireIn = totalSeconds - secondsLeft
+
+        if fireIn > 0 {
+            NotificationManager.instance.scheduleNotification(
+                title: "Almost there!",
+                subtitle: "Only \(secondsLeft / 60) minutes left",
+                timeInterval: TimeInterval(fireIn)
+            )
+        }
+    }
+
+    // Triggers repeating notifications every `intervalMinutes`
+    func scheduleNotificationEvery(intervalMinutes: Int, totalMinutes: Float) {
+        let intervalSeconds = intervalMinutes * 60
+        let totalSeconds = Int(totalMinutes * 60)
+
+        var elapsed = intervalSeconds
+        while elapsed < totalSeconds {
+            NotificationManager.instance.scheduleNotification(
+                title: "Time check",
+                subtitle: "\(elapsed / 60) minutes passed",
+                timeInterval: TimeInterval(elapsed)
+            )
+            elapsed += intervalSeconds
+        }
+    }
+    
     func pause() {
         
         guard timerIsActive else { return }
@@ -100,7 +138,7 @@ class BaseViewModel: ObservableObject {
         self.timerIsActive = false
         self.time = "\(Int(minutes)):00"
         self.remainingTime = 0
-        
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }
     
     func updateCountdown() {
@@ -150,7 +188,6 @@ class BaseViewModel: ObservableObject {
             reset()
             minutes = currentTime
         }
-
         if let userID = user.id, settingsModel.settings != user.settings {
             saveSettingsToFirestore(userID: userID, settings: settingsModel.settings) {
                 self.user.settings = self.settingsModel.settings
@@ -164,7 +201,6 @@ class BaseViewModel: ObservableObject {
     func exitStats() {
         showingStats = false
     }
-    
     
     private func saveSettingsToFirestore(userID: String, settings: Settings, completion: @escaping () -> Void) {
         let db = Firestore.firestore()
@@ -470,9 +506,7 @@ class BaseViewModel: ObservableObject {
         }
     }
 
-  
 
-    
     func dailyUsage() {
         guard let userId = user.id else { return }
         

@@ -16,6 +16,7 @@ struct ProfileView: View {
                         .font(.title2)
                         .foregroundColor(.black)
                         .padding(30)
+                        .padding(.top, 33)
                 }
 
                 VStack(spacing: 16) {
@@ -53,6 +54,7 @@ struct ProfileView: View {
 
                         ProfileButton(title: "Log Out", background: Color(UIColor(hex: 0xefefef)), textColor: .black) {
                             baseVM.user = .default
+                            baseVM.settingsModel.settings = Settings.default
                             baseVM.reset()
                             baseVM.minutes = baseVM.settingsModel.getModeTime(mode: baseVM.settingsModel.settings.currentMode)
                             dismiss()
